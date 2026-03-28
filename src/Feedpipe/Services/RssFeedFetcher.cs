@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
-using Feedpipe.Models;
+using Feedpipe.Core.Models;
+using Feedpipe.Core.Services;
 
 namespace Feedpipe.Services;
 

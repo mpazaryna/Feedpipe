@@ -1,6 +1,6 @@
-using Feedpipe.Models;
+using Feedpipe.Core.Models;
 
-namespace Feedpipe.Services;
+namespace Feedpipe.Core.Services;
 
 public interface IFeedFetcher
 {

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
+using Feedpipe.Core.Services;
 using Feedpipe.Services;
 using Moq;
 using Moq.Protected;

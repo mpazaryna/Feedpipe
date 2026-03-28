@@ -1,4 +1,4 @@
-namespace Feedpipe.Models;
+namespace Feedpipe.Core.Models;
 
 public record FeedItem(
     string Title,

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Feedpipe.Core.Services;
 using Feedpipe.Models;
 using Feedpipe.Services;
 

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Feedpipe.Core/Feedpipe.Core.csproj" />
+    <ProjectReference Include="../Feedpipe/Feedpipe.csproj" />
+  </ItemGroup>
+
+</Project>

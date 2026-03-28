@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
-using Feedpipe.Models;
+using Feedpipe.Core.Models;
+using Feedpipe.Core.Services;
 using Feedpipe.Services;
 
 namespace Feedpipe.Tests;
