@@ -1,36 +1,37 @@
 # Production Hardening
 
-**Objective:** Make Feedpipe deployable and operable in a production environment with resilience, observability, and containerized deployment.
+**Objective:** Make Feedpipe reliable enough to run unattended in production -- where failures are recovered from automatically, problems are visible before users notice, and deployment is repeatable.
 
 ## Success Criteria
 
-- [ ] Retry policies with exponential backoff (Polly)
-- [ ] Health check endpoints for the Worker and API
-- [ ] Structured logging with correlation IDs
-- [ ] Metrics/monitoring integration (Application Insights or OpenTelemetry)
-- [ ] Dockerfile for each runnable project
-- [ ] Docker Compose for local multi-service development
-- [ ] Configuration via environment variables (12-factor app)
-- [ ] Graceful shutdown handling
+- [ ] Transient failures (network timeouts, DNS blips, API rate limits) are retried automatically without human intervention
+- [ ] Operators can determine pipeline health at a glance without reading logs
+- [ ] A single request can be traced end-to-end across all pipeline stages
+- [ ] The pipeline can be deployed to any container host with a single command
+- [ ] Configuration works identically across local development and production environments
+- [ ] The pipeline shuts down gracefully without losing in-flight work
 
 ## Context
 
-Part of the [Feedpipe Roadmap](../../roadmap.md). The current pipeline works but has no resilience -- a network timeout crashes the worker, there are no health checks, and deployment is manual. This milestone brings the project to production-grade with the operational patterns required for any data pipeline where reliability and observability are non-negotiable.
+A pipeline that works on a developer's machine is not the same as a pipeline that works in production. The difference is what happens when things go wrong -- and things always go wrong. Networks drop. APIs rate-limit. Disks fill up. Containers get killed.
+
+Without resilience, a single failed HTTP request can crash the worker and stop all processing. Without observability, operators don't know it crashed until downstream consumers complain. Without containerization, every deployment is a manual, error-prone process.
+
+This milestone closes the gap between "it works" and "it runs."
 
 ## Materials
 
 | Material | Location | Status |
 |----------|----------|--------|
-| Polly retry policies | src/Feedpipe/Services/ | Not Started |
-| Health check endpoints | src/Feedpipe.Api/ , src/Feedpipe.Worker/ | Not Started |
-| Correlation ID middleware | src/Feedpipe/ | Not Started |
-| OpenTelemetry integration | src/Feedpipe/ | Not Started |
-| Dockerfile (API) | src/Feedpipe.Api/Dockerfile | Not Started |
-| Dockerfile (Worker) | src/Feedpipe.Worker/Dockerfile | Not Started |
+| Retry policies | src/Feedpipe/Services/ | Not Started |
+| Health check endpoints | src/Feedpipe.Api/, src/Feedpipe.Worker/ | Not Started |
+| Request correlation | src/Feedpipe/ | Not Started |
+| Observability integration | src/Feedpipe/ | Not Started |
+| Dockerfiles | src/Feedpipe.Api/, src/Feedpipe.Worker/ | Not Started |
 | Docker Compose | docker-compose.yml | Not Started |
-| Environment variable config | src/Feedpipe/ | Not Started |
+| Environment-based config | src/Feedpipe/ | Not Started |
 | Resilience tests | tests/Feedpipe.Tests/ | Not Started |
 
 ## Notes
 
-This milestone PRD needs to be fleshed out. Run `/orchestra:prd` to expand it when ready.
+This milestone PRD needs a spec before implementation. Run `/orchestra:spec` when ready.

@@ -1,34 +1,32 @@
 # Multi-Source Ingestion
 
-**Objective:** Extend the pipeline to fetch from multiple source types beyond RSS 2.0, with a pluggable adapter pattern that makes adding new sources straightforward.
+**Objective:** Enable the pipeline to ingest content from any structured source -- not just RSS -- so that a single deployment can aggregate data across formats and providers.
 
 ## Success Criteria
 
-- [ ] Atom feed support alongside existing RSS
-- [ ] At least one non-feed source (REST API, e.g. Hacker News API)
-- [ ] Source adapter interface in Feedpipe.Core
-- [ ] Auto-detection of feed format (RSS vs Atom)
-- [ ] Multiple feeds processed concurrently
-- [ ] Tests for each source adapter
-- [ ] Existing tests still pass
+- [ ] Adding a new source type requires implementing one interface, not changing the pipeline core
+- [ ] At least three source types work end-to-end (RSS, Atom, REST API)
+- [ ] The pipeline auto-detects the format of a feed URL without user configuration
+- [ ] Multiple sources are processed concurrently without blocking each other
+- [ ] A failing source does not prevent other sources from completing
 
 ## Context
 
-Part of the [Feedpipe Roadmap](../../roadmap.md). The current pipeline only handles RSS 2.0 feeds. Real-world data pipelines ingest from diverse sources. This milestone introduces the adapter pattern -- a common .NET approach where each source type implements a shared interface, and the pipeline doesn't need to know which type it's talking to.
+The current pipeline only understands RSS 2.0. In practice, content worth aggregating comes from many formats: Atom feeds, REST APIs, webhooks, file drops. A pipeline locked to one format forces users to find other tools or build custom integrations for every new source.
 
-This pattern applies across domains -- news aggregation pulls from RSS/Atom/APIs, healthcare pipelines pull from HL7/FHIR/flat files, research monitoring pulls from arxiv/PubMed/custom feeds.
+This milestone makes Feedpipe useful across domains. A news team needs RSS and Atom. A research team needs PubMed and arxiv APIs. A healthcare team needs FHIR endpoints. The value of the pipeline scales with the number of sources it can handle without custom code.
 
 ## Materials
 
 | Material | Location | Status |
 |----------|----------|--------|
-| ISourceAdapter interface | src/Feedpipe.Core/Services/ | Not Started |
+| Source adapter interface | src/Feedpipe.Core/Services/ | Not Started |
 | Atom feed adapter | src/Feedpipe/Services/ | Not Started |
 | REST API adapter | src/Feedpipe/Services/ | Not Started |
-| Feed format auto-detection | src/Feedpipe/Services/ | Not Started |
-| Concurrent feed processing | src/Feedpipe/ | Not Started |
+| Format auto-detection | src/Feedpipe/Services/ | Not Started |
+| Concurrent processing | src/Feedpipe/ | Not Started |
 | Adapter tests | tests/Feedpipe.Tests/ | Not Started |
 
 ## Notes
 
-This milestone PRD needs to be fleshed out. Run `/orchestra:prd` to expand it when ready.
+This milestone PRD needs a spec before implementation. Run `/orchestra:spec` when ready.
