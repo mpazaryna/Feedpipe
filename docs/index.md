@@ -10,11 +10,11 @@ A production-ready data pipeline that fetches, parses, transforms, and serves co
 
 | Namespace | Description |
 |-----------|-------------|
-| Feedpipe.Core.Models | Shared data models (FeedItem) |
-| Feedpipe.Core.Services | Service contracts (IFeedFetcher, IFeedWriter) |
-| Feedpipe.Services | Implementations (RssFeedFetcher, JsonFeedWriter) |
-| Feedpipe.Models | Application configuration (AppSettings, FeedSettings) |
-| Feedpipe.Worker | Background service for scheduled pipeline runs |
+| [Feedpipe.Core.Models](api/Feedpipe.Core.Models.html) | Shared data models (FeedItem) |
+| [Feedpipe.Core.Services](api/Feedpipe.Core.Services.html) | Service contracts (IFeedFetcher, IFeedWriter) |
+| [Feedpipe.Services](api/Feedpipe.Services.html) | Implementations (RssFeedFetcher, JsonFeedWriter) |
+| [Feedpipe.Models](api/Feedpipe.Models.html) | Application configuration (AppSettings, FeedSettings) |
+| [Feedpipe.Worker](api/Feedpipe.Worker.html) | Background service for scheduled pipeline runs |
 
 ## Quick Start
 
