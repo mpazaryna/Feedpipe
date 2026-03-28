@@ -4,7 +4,7 @@ _layout: landing
 
 # Feedpipe
 
-A data pipeline that fetches, parses, and stores content from RSS feeds. Built with .NET 10.
+A production-ready data pipeline that fetches, parses, transforms, and serves content from multiple sources. Built with .NET 10.
 
 ## Projects
 
@@ -24,6 +24,9 @@ dotnet run --project src/Feedpipe
 dotnet test
 ```
 
-## API Reference
+## Documentation
 
-Browse the full [API documentation](api/index.md).
+- [API Reference](api/index.md) -- generated from XML doc comments
+- [Roadmap](project/roadmap.md) -- project vision, milestones, and status
+- [Decisions](project/adr/ADR-000-the-score.md) -- architecture decision records
+- [Devlog](project/devlog/2026-Q1/2026-03-28-project-kickoff.md) -- development journal

@@ -19,6 +19,16 @@
       {
         "files": ["*.md", "articles/*.md"],
         "exclude": ["_site/**"]
+      },
+      {
+        "files": [
+          "roadmap.md",
+          "adr/*.md",
+          "work/*/prd.md",
+          "devlog/**/*.md"
+        ],
+        "src": "../.orchestra",
+        "dest": "project"
       }
     ],
     "globalMetadata": {
