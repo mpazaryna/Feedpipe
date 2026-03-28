@@ -1,3 +1,37 @@
+// -----------------------------------------------------------------------
+// RssFeedFetcher Tests
+//
+// Unit tests for the RSS feed parsing logic. These tests verify that
+// RssFeedFetcher correctly parses RSS XML into FeedItem records.
+//
+// TESTING STRATEGY:
+//
+// We mock the HTTP layer so tests never hit the network. This makes them:
+//   - Fast (no network latency)
+//   - Deterministic (same input = same output, always)
+//   - Runnable offline (CI servers, planes, coffee shops)
+//
+// HOW HTTP MOCKING WORKS IN .NET:
+//
+// HttpClient delegates all requests to an internal HttpMessageHandler.
+// We use Moq to create a fake handler that returns canned XML responses.
+// This is the standard pattern for testing HTTP-dependent code in .NET.
+//
+// The .Protected() call is needed because SendAsync is a protected method
+// on HttpMessageHandler -- Moq can't mock it directly, so we use the
+// Protected() helper to reach it.
+//
+// NullLogger<T>.Instance is a built-in no-op logger from Microsoft.
+// It satisfies the ILogger<T> dependency without producing any output,
+// keeping test output clean.
+//
+// NAMING CONVENTION:
+//
+// Test methods follow the pattern: MethodUnderTest_Scenario.
+// This is the most common convention in .NET testing. The underscores
+// make test names readable in test runner output.
+// -----------------------------------------------------------------------
+
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -8,8 +42,16 @@ using Moq.Protected;
 
 namespace Feedpipe.Tests;
 
+/// <summary>
+/// Tests for <see cref="RssFeedFetcher"/> RSS parsing and error handling.
+/// </summary>
 public class RssFeedFetcherTests
 {
+    /// <summary>
+    /// Sample RSS 2.0 XML used across multiple tests. Defined as a constant
+    /// so each test works with the same known input. The raw string literal
+    /// (triple quotes, C# 11) preserves formatting without escape characters.
+    /// </summary>
     private const string SampleRss = """
         <?xml version="1.0" encoding="UTF-8"?>
         <rss version="2.0">
@@ -31,6 +73,12 @@ public class RssFeedFetcherTests
         </rss>
         """;
 
+    /// <summary>
+    /// Creates an HttpClient backed by a mocked handler that returns the
+    /// given content for any request. This avoids hitting the network.
+    /// </summary>
+    /// <param name="responseContent">The XML string to return as the response body.</param>
+    /// <returns>An HttpClient that will return the canned response.</returns>
     private static HttpClient CreateMockHttpClient(string responseContent)
     {
         var handler = new Mock<HttpMessageHandler>();
@@ -48,6 +96,9 @@ public class RssFeedFetcherTests
         return new HttpClient(handler.Object);
     }
 
+    /// <summary>
+    /// Verifies that the fetcher parses the correct number of items from valid RSS.
+    /// </summary>
     [Fact]
     public async Task FetchAsync_ParsesItemsFromRss()
     {
@@ -59,6 +110,9 @@ public class RssFeedFetcherTests
         Assert.Equal(2, items.Count);
     }
 
+    /// <summary>
+    /// Verifies that title and link are extracted correctly from each item.
+    /// </summary>
     [Fact]
     public async Task FetchAsync_ExtractsTitleAndLink()
     {
@@ -73,6 +127,10 @@ public class RssFeedFetcherTests
         Assert.Equal("https://example.com/2", items[1].Link);
     }
 
+    /// <summary>
+    /// Verifies that HTML tags in descriptions are stripped, leaving plain text.
+    /// The first item has <c>&lt;p&gt;</c> tags; the second has no HTML.
+    /// </summary>
     [Fact]
     public async Task FetchAsync_StripsHtmlFromDescription()
     {
@@ -85,6 +143,9 @@ public class RssFeedFetcherTests
         Assert.Equal("No HTML here", items[1].Description);
     }
 
+    /// <summary>
+    /// Verifies that RFC 2822 date strings in pubDate are parsed correctly.
+    /// </summary>
     [Fact]
     public async Task FetchAsync_ParsesPublishedDate()
     {
@@ -96,6 +157,10 @@ public class RssFeedFetcherTests
         Assert.Equal(new DateTime(2024, 1, 1, 12, 0, 0), items[0].PublishedDate.ToUniversalTime());
     }
 
+    /// <summary>
+    /// Verifies that a valid RSS feed with no items returns an empty list
+    /// rather than throwing an exception.
+    /// </summary>
     [Fact]
     public async Task FetchAsync_HandlesEmptyFeed()
     {
@@ -113,6 +178,11 @@ public class RssFeedFetcherTests
         Assert.Empty(items);
     }
 
+    /// <summary>
+    /// Verifies graceful handling of items with missing optional elements.
+    /// Real-world RSS feeds frequently omit link, description, or pubDate.
+    /// The fetcher should use sensible defaults rather than throwing.
+    /// </summary>
     [Fact]
     public async Task FetchAsync_HandlesMissingFields()
     {

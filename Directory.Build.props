@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <!-- Generate XML documentation files alongside assemblies -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- CA1848: Use LoggerMessage delegates — overkill for this project size -->
     <!-- CA1305: IFormatProvider on Serilog config — not applicable -->
     <NoWarn>CA1848;CA1305;CA1873</NoWarn>
