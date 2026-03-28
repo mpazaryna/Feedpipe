@@ -1,6 +1,6 @@
 # Feedpipe Roadmap
 
-**Objective:** A production-ready .NET data pipeline that fetches, transforms, and serves content from multiple sources -- built as a learning vehicle and portfolio piece for onboarding to a healthcare data pipeline team.
+**Objective:** A production-ready .NET data pipeline that fetches, transforms, and serves content from multiple sources with pluggable adapters, transformation stages, and resilient delivery.
 
 ## Success Criteria
 
@@ -12,9 +12,9 @@
 
 ## Context
 
-Feedpipe started as a hands-on .NET learning project during onboarding prep for a healthcare data pipeline role starting 2026-03-30. The project demonstrates .NET patterns (DI, interfaces, Options, hosted services, minimal APIs) through a real working pipeline. The audience is both the developer (learning) and the team being joined (demonstrating competency).
+Feedpipe is a content aggregation and data pipeline platform built on .NET 10. It ingests content from diverse sources, transforms and enriches it, and serves it through multiple interfaces. The architecture follows a staged pipeline: fetch -> parse -> transform -> store, with multiple entry points (console runner, background worker, REST API, CLI).
 
-The architecture follows a staged pipeline: fetch -> parse -> transform -> store, with multiple entry points (console, worker, API, CLI).
+The pipeline pattern is domain-agnostic -- applicable to news aggregation, research monitoring, competitive intelligence, healthcare data ingestion, or any scenario where structured content needs to be collected from heterogeneous sources.
 
 ## Milestones
 

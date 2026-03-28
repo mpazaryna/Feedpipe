@@ -16,7 +16,7 @@
 
 Part of the [Feedpipe Roadmap](../../roadmap.md). The current pipeline only handles RSS 2.0 feeds. Real-world data pipelines ingest from diverse sources. This milestone introduces the adapter pattern -- a common .NET approach where each source type implements a shared interface, and the pipeline doesn't need to know which type it's talking to.
 
-This is directly relevant to the healthcare pipeline role, where data will come from multiple systems (HL7, FHIR APIs, flat files).
+This pattern applies across domains -- news aggregation pulls from RSS/Atom/APIs, healthcare pipelines pull from HL7/FHIR/flat files, research monitoring pulls from arxiv/PubMed/custom feeds.
 
 ## Materials
 

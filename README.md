@@ -1,6 +1,6 @@
 # Feedpipe
 
-A data pipeline that fetches, parses, and stores content from RSS feeds. Built with .NET 10.
+A production-ready data pipeline that fetches, parses, transforms, and serves content from multiple sources. Built with .NET 10.
 
 ## Prerequisites
 

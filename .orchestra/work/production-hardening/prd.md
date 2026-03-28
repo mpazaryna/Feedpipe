@@ -15,7 +15,7 @@
 
 ## Context
 
-Part of the [Feedpipe Roadmap](../../roadmap.md). The current pipeline works but has no resilience -- a network timeout crashes the worker, there are no health checks, and deployment is manual. This milestone brings the project to production-grade, demonstrating the operational patterns expected in a healthcare data pipeline where reliability and observability are non-negotiable.
+Part of the [Feedpipe Roadmap](../../roadmap.md). The current pipeline works but has no resilience -- a network timeout crashes the worker, there are no health checks, and deployment is manual. This milestone brings the project to production-grade with the operational patterns required for any data pipeline where reliability and observability are non-negotiable.
 
 ## Materials
 

@@ -19,7 +19,7 @@
 
 ## Context
 
-Built during a single session as a hands-on .NET learning exercise. The foundation demonstrates the core patterns found in any production .NET codebase: DI, interfaces, typed configuration, async/await, and multi-project architecture.
+The foundation establishes the core patterns used throughout the pipeline: DI, interfaces, typed configuration, async/await, and multi-project architecture. This milestone defines the project structure and conventions that all subsequent milestones build on.
 
 ## Materials
 
