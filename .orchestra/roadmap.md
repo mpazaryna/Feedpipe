@@ -47,3 +47,4 @@ Adds a composable transformation layer between ingestion and storage. Handles de
 - ADR-000: [The Score](adr/ADR-000-the-score.md)
 - ADR-001: [Domain-Agnostic Pipeline](adr/ADR-001-domain-agnostic-pipeline.md)
 - ADR-002: [Production Readiness is Continuous](adr/ADR-002-production-readiness-is-continuous.md)
+- ADR-003: [No External Documentation Site](adr/ADR-003-no-docs-site.md)

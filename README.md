@@ -1,10 +1,8 @@
 # Conduit
 
 [![CI](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml/badge.svg)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
-[![Docs](https://github.com/mpazaryna/Conduit/actions/workflows/docs.yml/badge.svg)](https://github.com/mpazaryna/Conduit/actions/workflows/docs.yml)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download)
 [![Tests](https://img.shields.io/badge/tests-52%20passing-green)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
-[![API Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://mpazaryna.github.io/Conduit/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 A domain-agnostic data pipeline that ingests, transforms, and serves data from multiple source types. Built with .NET 10.
@@ -97,12 +95,13 @@ dotnet run --project src/App/Conduit.Cli -- stats
 - Serilog (logging)
 - xUnit + Moq (testing)
 - coverlet (code coverage)
-- GitHub Actions (CI/CD)
-- DocFX (API documentation)
+- GitHub Actions (CI)
 
 ## Documentation
 
-- [API Reference](https://mpazaryna.github.io/Conduit/) -- generated from XML doc comments
+All documentation lives in the repo ([ADR-003](.orchestra/adr/ADR-003-no-docs-site.md)).
+
 - [Roadmap](.orchestra/roadmap.md) -- project vision and milestone status
-- [ADR-001](.orchestra/adr/ADR-001-domain-agnostic-pipeline.md) -- domain-agnostic architecture decision
-- [Learning Notes](.orchestra/devlog/2026-Q1/) -- .NET fundamentals, DI, testing, architecture
+- [Decisions](.orchestra/adr/) -- architecture decision records
+- [Devlog](.orchestra/devlog/2026-Q1/) -- development journal and learning notes
+- XML doc comments in every `.cs` file -- renders as IntelliSense in your IDE
