@@ -1,11 +1,9 @@
 // -----------------------------------------------------------------------
-// RssSourceAdapter Tests
+// FeedSourceAdapter Tests
 //
-// Unit tests for the RSS source adapter. These tests verify that
-// RssSourceAdapter correctly parses RSS XML into FeedItem records.
-//
-// We mock the HTTP layer so tests never hit the network. This makes them
-// fast, deterministic, and runnable offline.
+// Unit tests for the feed source adapter. Tests verify that the adapter
+// correctly parses both RSS and Atom XML into FeedItem records, and
+// auto-detects the format from the XML root element.
 // -----------------------------------------------------------------------
 
 using System.Net;
@@ -20,9 +18,9 @@ using Moq.Protected;
 namespace Conduit.Sources.Rss.Tests;
 
 /// <summary>
-/// Tests for <see cref="RssSourceAdapter"/> RSS parsing and error handling.
+/// Tests for <see cref="FeedSourceAdapter"/> RSS/Atom parsing and auto-detection.
 /// </summary>
-public class RssSourceAdapterTests
+public class FeedSourceAdapterTests
 {
     private const string SampleRss = """
         <?xml version="1.0" encoding="UTF-8"?>
@@ -45,6 +43,25 @@ public class RssSourceAdapterTests
         </rss>
         """;
 
+    private const string SampleAtom = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+          <title>Test Atom Feed</title>
+          <entry>
+            <title>Atom Post One</title>
+            <link href="https://example.com/atom/1" />
+            <summary>First atom summary</summary>
+            <updated>2024-01-15T10:00:00Z</updated>
+          </entry>
+          <entry>
+            <title>Atom Post Two</title>
+            <link href="https://example.com/atom/2" />
+            <summary>&lt;b&gt;Bold summary&lt;/b&gt;</summary>
+            <updated>2024-01-16T12:00:00Z</updated>
+          </entry>
+        </feed>
+        """;
+
     private static HttpClient CreateMockHttpClient(string responseContent)
     {
         var handler = new Mock<HttpMessageHandler>();
@@ -62,11 +79,13 @@ public class RssSourceAdapterTests
         return new HttpClient(handler.Object);
     }
 
+    // ---- RSS TESTS ----
+
     [Fact]
     public async Task IngestAsync_ParsesItemsFromRss()
     {
         var httpClient = CreateMockHttpClient(SampleRss);
-        var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
 
@@ -74,10 +93,10 @@ public class RssSourceAdapterTests
     }
 
     [Fact]
-    public async Task IngestAsync_ExtractsTitleAndLink()
+    public async Task IngestAsync_ExtractsTitleAndLinkFromRss()
     {
         var httpClient = CreateMockHttpClient(SampleRss);
-        var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
         var feedItems = items.Cast<FeedItem>().ToList();
@@ -89,10 +108,10 @@ public class RssSourceAdapterTests
     }
 
     [Fact]
-    public async Task IngestAsync_StripsHtmlFromDescription()
+    public async Task IngestAsync_StripsHtmlFromRssDescription()
     {
         var httpClient = CreateMockHttpClient(SampleRss);
-        var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
         var feedItems = items.Cast<FeedItem>().ToList();
@@ -102,10 +121,10 @@ public class RssSourceAdapterTests
     }
 
     [Fact]
-    public async Task IngestAsync_ParsesPublishedDate()
+    public async Task IngestAsync_ParsesPublishedDateFromRss()
     {
         var httpClient = CreateMockHttpClient(SampleRss);
-        var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
         var feedItems = items.Cast<FeedItem>().ToList();
@@ -114,7 +133,7 @@ public class RssSourceAdapterTests
     }
 
     [Fact]
-    public async Task IngestAsync_HandlesEmptyFeed()
+    public async Task IngestAsync_HandlesEmptyRssFeed()
     {
         var emptyRss = """
             <?xml version="1.0"?>
@@ -123,7 +142,7 @@ public class RssSourceAdapterTests
             </rss>
             """;
         var httpClient = CreateMockHttpClient(emptyRss);
-        var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
 
@@ -131,7 +150,7 @@ public class RssSourceAdapterTests
     }
 
     [Fact]
-    public async Task IngestAsync_HandlesMissingFields()
+    public async Task IngestAsync_HandlesMissingRssFields()
     {
         var partialRss = """
             <?xml version="1.0"?>
@@ -144,7 +163,7 @@ public class RssSourceAdapterTests
             </rss>
             """;
         var httpClient = CreateMockHttpClient(partialRss);
-        var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
 
@@ -154,5 +173,118 @@ public class RssSourceAdapterTests
         Assert.Equal("", feedItem.Link);
         Assert.Equal("", feedItem.Description);
         Assert.Equal(DateTime.MinValue, feedItem.PublishedDate);
+    }
+
+    // ---- ATOM TESTS ----
+
+    [Fact]
+    public async Task IngestAsync_ParsesItemsFromAtom()
+    {
+        var httpClient = CreateMockHttpClient(SampleAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/atom.xml");
+
+        Assert.Equal(2, items.Count);
+    }
+
+    [Fact]
+    public async Task IngestAsync_ExtractsTitleAndLinkFromAtom()
+    {
+        var httpClient = CreateMockHttpClient(SampleAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/atom.xml");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        Assert.Equal("Atom Post One", feedItems[0].Title);
+        Assert.Equal("https://example.com/atom/1", feedItems[0].Link);
+        Assert.Equal("Atom Post Two", feedItems[1].Title);
+        Assert.Equal("https://example.com/atom/2", feedItems[1].Link);
+    }
+
+    [Fact]
+    public async Task IngestAsync_StripsHtmlFromAtomSummary()
+    {
+        var httpClient = CreateMockHttpClient(SampleAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/atom.xml");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        Assert.Equal("First atom summary", feedItems[0].Description);
+        Assert.Equal("Bold summary", feedItems[1].Description);
+    }
+
+    [Fact]
+    public async Task IngestAsync_ParsesUpdatedDateFromAtom()
+    {
+        var httpClient = CreateMockHttpClient(SampleAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/atom.xml");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        Assert.Equal(new DateTime(2024, 1, 15, 10, 0, 0), feedItems[0].PublishedDate.ToUniversalTime());
+    }
+
+    [Fact]
+    public async Task IngestAsync_HandlesEmptyAtomFeed()
+    {
+        var emptyAtom = """
+            <?xml version="1.0"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <title>Empty</title>
+            </feed>
+            """;
+        var httpClient = CreateMockHttpClient(emptyAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/atom.xml");
+
+        Assert.Empty(items);
+    }
+
+    // ---- AUTO-DETECTION TESTS ----
+
+    [Fact]
+    public async Task IngestAsync_AutoDetectsRssFormat()
+    {
+        var httpClient = CreateMockHttpClient(SampleRss);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        // RSS items have pubDate-style dates
+        Assert.Equal("First Post", feedItems[0].Title);
+    }
+
+    [Fact]
+    public async Task IngestAsync_AutoDetectsAtomFormat()
+    {
+        var httpClient = CreateMockHttpClient(SampleAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        // Atom items have entry/link[@href] style links
+        Assert.Equal("https://example.com/atom/1", feedItems[0].Link);
+    }
+
+    [Fact]
+    public async Task IngestAsync_ReturnsEmptyForUnknownFormat()
+    {
+        var unknownXml = """
+            <?xml version="1.0"?>
+            <html><body>Not a feed</body></html>
+            """;
+        var httpClient = CreateMockHttpClient(unknownXml);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/page");
+
+        Assert.Empty(items);
     }
 }

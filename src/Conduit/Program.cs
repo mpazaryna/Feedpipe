@@ -60,9 +60,9 @@ services.AddHttpClient();
 
 // Register adapters as keyed services, resolved by SourceSettings.Type
 services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
-    new RssSourceAdapter(
+    new FeedSourceAdapter(
         sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<RssSourceAdapter>>()));
+        sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
 services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
 
 services.AddSingleton<IOutputWriter>(sp =>

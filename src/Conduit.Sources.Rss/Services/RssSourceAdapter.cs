@@ -6,50 +6,36 @@ using Conduit.Core.Services;
 namespace Conduit.Sources.Rss.Services;
 
 /// <summary>
-/// Ingests and parses RSS 2.0 feeds over HTTP.
+/// Ingests and parses RSS 2.0 and Atom feeds over HTTP with automatic
+/// format detection.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This is a concrete implementation of <see cref="ISourceAdapter"/> for RSS feeds.
-/// It uses <see cref="HttpClient"/> for HTTP requests and <see cref="XDocument"/>
-/// (LINQ to XML) for parsing the RSS XML.
+/// Auto-detects the feed format by inspecting the root XML element:
+/// <c>&lt;rss&gt;</c> for RSS 2.0, <c>&lt;feed&gt;</c> for Atom.
+/// The caller does not need to specify which format the URL returns.
 /// </para>
 ///
-/// <para><b>Dependency Injection:</b></para>
+/// <para><b>Error handling:</b></para>
 /// <para>
-/// Both dependencies (<c>HttpClient</c> and <c>ILogger</c>) are received through
-/// the constructor via <b>constructor injection</b>. The DI container creates the
-/// object and supplies its dependencies automatically.
-/// </para>
-///
-/// <para><b>HttpClient lifecycle:</b></para>
-/// <para>
-/// The <c>HttpClient</c> is provided by <c>IHttpClientFactory</c> (registered via
-/// <c>AddHttpClient&lt;ISourceAdapter, RssSourceAdapter&gt;()</c> in Program.cs).
-/// This avoids socket exhaustion under load.
-/// </para>
-///
-/// <para><b>Error handling strategy:</b></para>
-/// <para>
-/// Network errors (<see cref="HttpRequestException"/>) and malformed XML
-/// (<see cref="System.Xml.XmlException"/>) are caught, logged, and converted to
-/// empty results. This allows the pipeline to continue processing other sources
-/// even when one source is down or returns invalid content.
+/// Network errors, malformed XML, and unrecognized formats are caught,
+/// logged, and converted to empty results. The pipeline continues
+/// processing other sources.
 /// </para>
 /// </remarks>
-public class RssSourceAdapter : ISourceAdapter
+public class FeedSourceAdapter : ISourceAdapter
 {
+    private static readonly XNamespace AtomNs = "http://www.w3.org/2005/Atom";
+
     private readonly HttpClient _httpClient;
-    private readonly ILogger<RssSourceAdapter> _logger;
+    private readonly ILogger<FeedSourceAdapter> _logger;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="RssSourceAdapter"/>.
+    /// Initializes a new instance of <see cref="FeedSourceAdapter"/>.
     /// </summary>
-    /// <param name="httpClient">
-    /// The HTTP client used to fetch feed content. Managed by IHttpClientFactory.
-    /// </param>
+    /// <param name="httpClient">HTTP client managed by IHttpClientFactory.</param>
     /// <param name="logger">Typed logger for structured logging.</param>
-    public RssSourceAdapter(HttpClient httpClient, ILogger<RssSourceAdapter> logger)
+    public FeedSourceAdapter(HttpClient httpClient, ILogger<FeedSourceAdapter> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
@@ -58,23 +44,21 @@ public class RssSourceAdapter : ISourceAdapter
     /// <inheritdoc />
     public async Task<List<IPipelineRecord>> IngestAsync(string location)
     {
-        _logger.LogInformation("Ingesting RSS source: {Location}", location);
+        _logger.LogInformation("Ingesting feed source: {Location}", location);
 
         try
         {
             var response = await _httpClient.GetStringAsync(location);
             var doc = XDocument.Parse(response);
 
-            var items = doc.Descendants("item")
-                .Select(item => (IPipelineRecord)new FeedItem(
-                    Title: item.Element("title")?.Value ?? "(no title)",
-                    Link: item.Element("link")?.Value ?? "",
-                    Description: StripHtml(item.Element("description")?.Value ?? ""),
-                    PublishedDate: DateTime.TryParse(item.Element("pubDate")?.Value, out var date)
-                        ? date
-                        : DateTime.MinValue
-                ))
-                .ToList();
+            var rootName = doc.Root?.Name.LocalName;
+
+            var items = rootName switch
+            {
+                "rss" => ParseRss(doc),
+                "feed" => ParseAtom(doc),
+                _ => HandleUnknownFormat(rootName, location)
+            };
 
             _logger.LogInformation("Parsed {Count} items from {Location}", items.Count, location);
             return items;
@@ -91,9 +75,43 @@ public class RssSourceAdapter : ISourceAdapter
         }
     }
 
-    /// <summary>
-    /// Removes HTML tags from a string, leaving only plain text.
-    /// </summary>
+    private static List<IPipelineRecord> ParseRss(XDocument doc)
+    {
+        return doc.Descendants("item")
+            .Select(item => (IPipelineRecord)new FeedItem(
+                Title: item.Element("title")?.Value ?? "(no title)",
+                Link: item.Element("link")?.Value ?? "",
+                Description: StripHtml(item.Element("description")?.Value ?? ""),
+                PublishedDate: DateTime.TryParse(item.Element("pubDate")?.Value, out var date)
+                    ? date
+                    : DateTime.MinValue
+            ))
+            .ToList();
+    }
+
+    private static List<IPipelineRecord> ParseAtom(XDocument doc)
+    {
+        return doc.Descendants(AtomNs + "entry")
+            .Select(entry => (IPipelineRecord)new FeedItem(
+                Title: entry.Element(AtomNs + "title")?.Value ?? "(no title)",
+                Link: entry.Element(AtomNs + "link")?.Attribute("href")?.Value ?? "",
+                Description: StripHtml(entry.Element(AtomNs + "summary")?.Value
+                    ?? entry.Element(AtomNs + "content")?.Value ?? ""),
+                PublishedDate: DateTime.TryParse(
+                    entry.Element(AtomNs + "updated")?.Value
+                    ?? entry.Element(AtomNs + "published")?.Value, out var date)
+                    ? date
+                    : DateTime.MinValue
+            ))
+            .ToList();
+    }
+
+    private List<IPipelineRecord> HandleUnknownFormat(string? rootName, string location)
+    {
+        _logger.LogWarning("Unrecognized feed format '{RootElement}' from {Location}", rootName, location);
+        return [];
+    }
+
     private static string StripHtml(string html)
     {
         return System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", "").Trim();

@@ -32,9 +32,9 @@ builder.Services.AddHttpClient();
 
 // Register adapters as keyed services
 builder.Services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
-    new RssSourceAdapter(
+    new FeedSourceAdapter(
         sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<RssSourceAdapter>>()));
+        sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
 builder.Services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
 
 builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>

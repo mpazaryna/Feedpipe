@@ -6,7 +6,7 @@
 
 - [x] Adding a new source type requires no changes to the pipeline core
 - [x] At least three source types work end-to-end (RSS, Atom, EDI 834)
-- [ ] The pipeline auto-detects feed format without user configuration
+- [x] The pipeline auto-detects feed format without user configuration
 - [x] EDI 834 files can be ingested from the local filesystem
 - [x] Multiple sources are processed concurrently without blocking each other
 - [x] A failing source does not prevent other sources from completing
@@ -35,4 +35,4 @@ EDI 834 is the healthcare industry standard for exchanging member enrollment dat
 - [x] EDI 834 adapter with EnrollmentRecord model (Conduit.Sources.Edi834)
 - [x] 834 test fixtures and 12 adapter tests
 - [x] RSS and 834 output to data/rss/ and data/edi834/ respectively
-- [ ] Atom feed support with format auto-detection (deferred -- does not block milestone)
+- [x] Atom feed support with format auto-detection
