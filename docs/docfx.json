@@ -29,5 +29,20 @@
       "_appFaviconPath": ""
     },
     "dest": "_site"
+  },
+  "pdf": {
+    "content": [
+      {
+        "files": ["api/**.yml", "api/index.md"]
+      },
+      {
+        "files": ["*.md"],
+        "exclude": ["_site/**"]
+      }
+    ],
+    "globalMetadata": {
+      "_appTitle": "Conduit API Reference"
+    },
+    "dest": "_site/pdf"
   }
 }
