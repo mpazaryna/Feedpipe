@@ -4,12 +4,12 @@
 
 ## Success Criteria
 
-- [ ] Adding a new source type requires implementing one interface, not changing the pipeline core
+- [x] Adding a new source type requires implementing one interface, not changing the pipeline core
 - [ ] At least three source types work end-to-end (RSS, Atom, EDI 834)
 - [ ] The pipeline auto-detects the format of feed-based sources (RSS vs Atom) without user configuration
 - [ ] EDI 834 files can be ingested from the local filesystem with a clear path to SFTP/API ingestion
 - [ ] Multiple sources are processed concurrently without blocking each other
-- [ ] A failing source does not prevent other sources from completing
+- [x] A failing source does not prevent other sources from completing
 - [ ] Content-based sources (RSS, Atom) and record-based sources (834) coexist in the same pipeline without contaminating each other's domain types
 
 ## Context
@@ -24,20 +24,31 @@ EDI 834 (ANSI X12 Benefit Enrollment and Maintenance) is the healthcare industry
 
 | Material | Location | Status |
 |----------|----------|--------|
-| ISourceAdapter interface | src/Conduit.Core/Services/ | Not Started |
-| IPipelineRecord base type | src/Conduit.Core/Models/ | Not Started |
-| RSS adapter (refactor from RssFeedFetcher) | src/Conduit/Services/ | Not Started |
-| Atom feed adapter | src/Conduit/Services/ | Not Started |
-| EDI 834 adapter | src/Conduit/Services/ | Not Started |
-| EnrollmentRecord model | src/Conduit.Core/Models/ | Not Started |
-| Feed format auto-detection | src/Conduit/Services/ | Not Started |
+| ISourceAdapter interface | src/Conduit.Core/Services/ISourceAdapter.cs | Done |
+| IOutputWriter interface | src/Conduit.Core/Services/IOutputWriter.cs | Done |
+| SourceSettings config with Type field | src/Conduit/Models/FeedSettings.cs | Done |
+| RSS adapter (isolated project) | src/Conduit.Sources.Rss/ | Done |
+| RSS adapter tests | tests/Conduit.Sources.Rss.Tests/ | Done |
+| Atom feed adapter | src/Conduit.Sources.Rss/ | Not Started |
+| Feed format auto-detection (RSS vs Atom) | src/Conduit.Sources.Rss/ | Not Started |
+| Adapter registration by Type in DI | src/Conduit/ | Not Started |
 | Concurrent source processing | src/Conduit/ | Not Started |
-| Adapter tests (RSS, Atom, 834) | tests/Conduit.Tests/ | Not Started |
+| EDI 834 adapter | src/Conduit.Sources.Edi834/ | Not Started |
+| EnrollmentRecord model | src/Conduit.Sources.Edi834/ | Not Started |
+| 834 sample test fixtures | tests/Conduit.Sources.Edi834.Tests/fixtures/ | Not Started |
+| 834 adapter tests | tests/Conduit.Sources.Edi834.Tests/ | Not Started |
 
 ## Notes
 
-The key design decision is the abstraction boundary between content sources (RSS/Atom) and record sources (834). Both flow through the same pipeline infrastructure, but their domain types must remain separate. FeedItem and EnrollmentRecord should share a common interface (IPipelineRecord) without sharing fields.
+Several items are already done from the foundation refactor:
+- `ISourceAdapter` and `IOutputWriter` interfaces exist in Core
+- `SourceSettings` has a `Type` field for adapter selection
+- RSS adapter is isolated in its own project with 6 passing tests
+- Error handling already prevents one failing source from crashing the pipeline
 
-834 parsing involves X12 segment structure: ISA envelope, GS functional group, ST transaction set, and member loops (2000) containing INS, REF, DTP, NM1, and other segments. Sample 834 test files will be needed in the test fixtures.
+Remaining work falls into three tracks:
+1. **Atom support** -- add to the existing RSS source project since Atom is a content feed format, sharing the same FeedItem model. Include auto-detection so users don't need to specify RSS vs Atom.
+2. **Adapter routing** -- the pipeline currently hardcodes `RssSourceAdapter` in DI. It needs to resolve the correct adapter based on `SourceSettings.Type` at runtime.
+3. **EDI 834** -- new source project with its own domain model (`EnrollmentRecord`), parser, and test fixtures. This is the proof that the architecture handles fundamentally different data shapes.
 
-This milestone PRD needs a spec before implementation. Run `/orchestra:spec` when ready.
+834 parsing involves X12 segment structure: ISA envelope, GS functional group, ST transaction set, and member loops (2000) containing INS, REF, DTP, NM1, and other segments.
