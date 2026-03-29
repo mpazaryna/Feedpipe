@@ -1,9 +1,9 @@
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
-using Feedpipe.Core.Models;
-using Feedpipe.Core.Services;
+using Conduit.Core.Models;
+using Conduit.Core.Services;
 
-namespace Feedpipe.Services;
+namespace Conduit.Services;
 
 /// <summary>
 /// Fetches and parses RSS 2.0 feeds over HTTP.

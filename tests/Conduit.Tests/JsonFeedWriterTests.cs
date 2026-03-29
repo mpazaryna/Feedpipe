@@ -22,11 +22,11 @@
 
 using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
-using Feedpipe.Core.Models;
-using Feedpipe.Core.Services;
-using Feedpipe.Services;
+using Conduit.Core.Models;
+using Conduit.Core.Services;
+using Conduit.Services;
 
-namespace Feedpipe.Tests;
+namespace Conduit.Tests;
 
 /// <summary>
 /// Tests for <see cref="JsonFeedWriter"/> file output behavior.

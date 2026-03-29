@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <UserSecretsId>dotnet-Feedpipe.Worker-3ece2bf1-8a11-41fd-baf0-fd1b835ccb22</UserSecretsId>
+    <UserSecretsId>dotnet-Conduit.Worker-3ece2bf1-8a11-41fd-baf0-fd1b835ccb22</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Feedpipe.Core/Feedpipe.Core.csproj" />
-    <ProjectReference Include="../Feedpipe/Feedpipe.csproj" />
+    <ProjectReference Include="../Conduit.Core/Conduit.Core.csproj" />
+    <ProjectReference Include="../Conduit/Conduit.csproj" />
   </ItemGroup>
 
 </Project>

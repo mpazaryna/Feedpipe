@@ -35,12 +35,12 @@
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
-using Feedpipe.Core.Services;
-using Feedpipe.Services;
+using Conduit.Core.Services;
+using Conduit.Services;
 using Moq;
 using Moq.Protected;
 
-namespace Feedpipe.Tests;
+namespace Conduit.Tests;
 
 /// <summary>
 /// Tests for <see cref="RssFeedFetcher"/> RSS parsing and error handling.

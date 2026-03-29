@@ -1,6 +1,6 @@
-# Feedpipe
+# Conduit
 
-A production-ready data pipeline that fetches, parses, transforms, and serves content from multiple sources. Built with .NET 10.
+A production-ready data pipeline that ingests, transforms, and serves data from multiple source types. Built with .NET 10.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ A production-ready data pipeline that fetches, parses, transforms, and serves co
 dotnet restore
 
 # Run the pipeline
-dotnet run --project src/Feedpipe
+dotnet run --project src/Conduit
 
 # Run tests
 dotnet test
@@ -21,7 +21,7 @@ dotnet test
 
 ## Configuration
 
-Feed sources and output paths are configured in `src/Feedpipe/appsettings.json`:
+Sources and output paths are configured in `src/Conduit/appsettings.json`:
 
 ```json
 {
@@ -38,31 +38,22 @@ Feed sources and output paths are configured in `src/Feedpipe/appsettings.json`:
 ## Project Structure
 
 ```
-Feedpipe.slnx                       # Solution file
+Conduit.slnx                        # Solution file
 Directory.Build.props                # Shared build settings (warnings, analysis)
 .editorconfig                        # C# coding style enforcement
 src/
-  Feedpipe/
-    Program.cs                       # Entry point, DI container, logging setup
-    appsettings.json                 # Configuration
-    Models/
-      FeedItem.cs                    # Immutable data model (record type)
-      FeedSettings.cs                # Configuration models
-    Services/
-      IFeedFetcher.cs                # Interface for fetching feeds
-      RssFeedFetcher.cs              # RSS/XML feed fetcher implementation
-      IFeedWriter.cs                 # Interface for writing feed data
-      JsonFeedWriter.cs              # JSON file writer implementation
+  Conduit.Core/                      # Shared models and interfaces
+  Conduit/                           # Console pipeline runner
+  Conduit.Worker/                    # Background service (timer-based)
+  Conduit.Api/                       # REST API (ASP.NET minimal APIs)
+  Conduit.Cli/                       # Command-line tool
 tests/
-  Feedpipe.Tests/
-    RssFeedFetcherTests.cs           # Feed parsing tests (mocked HTTP)
-    JsonFeedWriterTests.cs           # File writing tests (temp directory)
-    GlobalUsings.cs                  # Shared test imports
+  Conduit.Tests/                     # xUnit tests with mocked HTTP
 ```
 
 ## Output
 
-- **fetched/** - JSON files with parsed feed items
+- **fetched/** - JSON files with parsed data
 - **logs/** - Daily rolling log files via Serilog
 
 ## Key Patterns

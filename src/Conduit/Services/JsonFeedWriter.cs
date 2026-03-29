@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Feedpipe.Core.Models;
-using Feedpipe.Core.Services;
+using Conduit.Core.Models;
+using Conduit.Core.Services;
 
-namespace Feedpipe.Services;
+namespace Conduit.Services;
 
 /// <summary>
 /// Persists feed items as formatted JSON files on the local filesystem.

@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Conduit.Core/Conduit.Core.csproj" />
+    <Project Path="src/Conduit/Conduit.csproj" />
+    <Project Path="src/Conduit.Worker/Conduit.Worker.csproj" />
+    <Project Path="src/Conduit.Api/Conduit.Api.csproj" />
+    <Project Path="src/Conduit.Cli/Conduit.Cli.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Conduit.Tests/Conduit.Tests.csproj" />
+  </Folder>
+</Solution>

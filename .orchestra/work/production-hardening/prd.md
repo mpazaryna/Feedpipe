@@ -1,6 +1,6 @@
 # Production Hardening
 
-**Objective:** Make Feedpipe reliable enough to run unattended in production -- where failures are recovered from automatically, problems are visible before users notice, and deployment is repeatable.
+**Objective:** Make Conduit reliable enough to run unattended in production -- where failures are recovered from automatically, problems are visible before users notice, and deployment is repeatable.
 
 ## Success Criteria
 
@@ -23,14 +23,14 @@ This milestone closes the gap between "it works" and "it runs."
 
 | Material | Location | Status |
 |----------|----------|--------|
-| Retry policies | src/Feedpipe/Services/ | Not Started |
-| Health check endpoints | src/Feedpipe.Api/, src/Feedpipe.Worker/ | Not Started |
-| Request correlation | src/Feedpipe/ | Not Started |
-| Observability integration | src/Feedpipe/ | Not Started |
-| Dockerfiles | src/Feedpipe.Api/, src/Feedpipe.Worker/ | Not Started |
+| Retry policies | src/Conduit/Services/ | Not Started |
+| Health check endpoints | src/Conduit.Api/, src/Conduit.Worker/ | Not Started |
+| Request correlation | src/Conduit/ | Not Started |
+| Observability integration | src/Conduit/ | Not Started |
+| Dockerfiles | src/Conduit.Api/, src/Conduit.Worker/ | Not Started |
 | Docker Compose | docker-compose.yml | Not Started |
-| Environment-based config | src/Feedpipe/ | Not Started |
-| Resilience tests | tests/Feedpipe.Tests/ | Not Started |
+| Environment-based config | src/Conduit/ | Not Started |
+| Resilience tests | tests/Conduit.Tests/ | Not Started |
 
 ## Notes
 

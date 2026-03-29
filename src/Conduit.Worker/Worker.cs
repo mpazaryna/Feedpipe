@@ -1,8 +1,8 @@
-using Feedpipe.Core.Services;
-using Feedpipe.Models;
+using Conduit.Core.Services;
+using Conduit.Models;
 using Microsoft.Extensions.Options;
 
-namespace Feedpipe.Worker;
+namespace Conduit.Worker;
 
 /// <summary>
 /// A long-running background service that fetches RSS feeds on a recurring schedule.

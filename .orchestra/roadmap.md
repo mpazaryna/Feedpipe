@@ -1,4 +1,4 @@
-# Feedpipe Roadmap
+# Conduit Roadmap
 
 **Objective:** A production-ready .NET data pipeline that fetches, transforms, and serves content from multiple sources with pluggable adapters, transformation stages, and resilient delivery.
 
@@ -12,7 +12,7 @@
 
 ## Context
 
-Feedpipe is a content aggregation and data pipeline platform built on .NET 10. It ingests content from diverse sources, transforms and enriches it, and serves it through multiple interfaces. The architecture follows a staged pipeline: fetch -> parse -> transform -> store, with multiple entry points (console runner, background worker, REST API, CLI).
+Conduit is a content aggregation and data pipeline platform built on .NET 10. It ingests content from diverse sources, transforms and enriches it, and serves it through multiple interfaces. The architecture follows a staged pipeline: fetch -> parse -> transform -> store, with multiple entry points (console runner, background worker, REST API, CLI).
 
 The pipeline pattern is domain-agnostic -- applicable to news aggregation, research monitoring, competitive intelligence, healthcare data ingestion, or any scenario where structured content needs to be collected from heterogeneous sources.
 
@@ -36,7 +36,7 @@ Introduces a pluggable source adapter pattern so the pipeline can ingest data fr
 
 ### Data Transformation
 
-Adds a composable transformation layer between ingestion and storage. Handles deduplication, content enrichment, validation, and pluggable storage backends. Turns Feedpipe from a data fetcher into a data pipeline.
+Adds a composable transformation layer between ingestion and storage. Handles deduplication, content enrichment, validation, and pluggable storage backends. Turns Conduit from a data fetcher into a data pipeline.
 
 - PRD: [.orchestra/work/data-transformation/prd.md](.orchestra/work/data-transformation/prd.md)
 - Dependency: Multi-Source Ingestion

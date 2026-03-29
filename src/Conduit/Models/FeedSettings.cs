@@ -1,4 +1,4 @@
-namespace Feedpipe.Models;
+namespace Conduit.Models;
 
 /// <summary>
 /// Configuration for a single RSS feed source.
@@ -33,7 +33,7 @@ public class FeedSettings
 }
 
 /// <summary>
-/// Root configuration model for the Feedpipe application.
+/// Root configuration model for the Conduit application.
 /// </summary>
 /// <remarks>
 /// <para>

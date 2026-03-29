@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// Feedpipe CLI - Command-Line Tool for Querying Fetched Data
+// Conduit CLI - Command-Line Tool for Querying Fetched Data
 //
 // A read-only tool that works with the JSON files produced by the pipeline.
 // Unlike the other projects, this doesn't fetch from the network -- it
@@ -24,20 +24,20 @@
 // difference is that System.CommandLine is strongly typed -- option values
 // are parsed directly into their target types (string, int, etc.).
 //
-// NOTE: This project only depends on Feedpipe.Core (for the FeedItem model),
-// not on Feedpipe (the main app). It reads JSON files directly rather than
+// NOTE: This project only depends on Conduit.Core (for the FeedItem model),
+// not on Conduit (the main app). It reads JSON files directly rather than
 // going through IFeedWriter. This is intentional -- the CLI is a lightweight
 // consumer of the pipeline's output, not a participant in the pipeline itself.
 //
-// RUN WITH: dotnet run --project src/Feedpipe.Cli -- list
-//           dotnet run --project src/Feedpipe.Cli -- search "AI"
-//           dotnet run --project src/Feedpipe.Cli -- stats
+// RUN WITH: dotnet run --project src/Conduit.Cli -- list
+//           dotnet run --project src/Conduit.Cli -- search "AI"
+//           dotnet run --project src/Conduit.Cli -- stats
 // -----------------------------------------------------------------------
 
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Text.Json;
-using Feedpipe.Core.Models;
+using Conduit.Core.Models;
 
 // JsonSerializerOptions with case-insensitive matching. This ensures
 // deserialization works regardless of whether the JSON uses PascalCase
@@ -48,7 +48,7 @@ var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true
 // and ensures consistent behavior across commands.
 var dirOption = new Option<string>("--dir", () => "fetched", "Directory containing fetched JSON files");
 
-var rootCommand = new RootCommand("Feedpipe CLI - search and filter fetched feed data");
+var rootCommand = new RootCommand("Conduit CLI - search and filter fetched feed data");
 
 // ---- SEARCH COMMAND ----
 // Scans all JSON files in the directory for items matching the search term

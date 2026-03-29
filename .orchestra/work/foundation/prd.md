@@ -19,12 +19,12 @@ A pipeline that can't be trusted at the foundation level can't be trusted at any
 
 | Material | Location | Status |
 |----------|----------|--------|
-| Core shared library | src/Feedpipe.Core/ | Done |
-| Console pipeline runner | src/Feedpipe/ | Done |
-| Background worker service | src/Feedpipe.Worker/ | Done |
-| REST API | src/Feedpipe.Api/ | Done |
-| CLI tool | src/Feedpipe.Cli/ | Done |
-| Unit tests | tests/Feedpipe.Tests/ | Done |
+| Core shared library | src/Conduit.Core/ | Done |
+| Console pipeline runner | src/Conduit/ | Done |
+| Background worker service | src/Conduit.Worker/ | Done |
+| REST API | src/Conduit.Api/ | Done |
+| CLI tool | src/Conduit.Cli/ | Done |
+| Unit tests | tests/Conduit.Tests/ | Done |
 | CI pipeline | .github/workflows/ci.yml | Done |
 | Documentation site | .github/workflows/docs.yml | Done |
 | Build conventions | Directory.Build.props, .editorconfig | Done |

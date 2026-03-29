@@ -14,19 +14,19 @@
 
 Raw data from external sources is messy. The same article appears in multiple feeds. Descriptions contain HTML artifacts. There's no categorization or structure beyond what the source provides. Users consuming this data -- whether through the API, CLI, or downstream systems -- shouldn't have to deal with duplicates or unstructured noise.
 
-A transformation layer is what turns a feed fetcher into a data pipeline. Without it, Feedpipe is just a downloader. With it, Feedpipe delivers curated, ready-to-use content.
+A transformation layer is what turns a feed fetcher into a data pipeline. Without it, Conduit is just a downloader. With it, Conduit delivers curated, ready-to-use content.
 
 ## Materials
 
 | Material | Location | Status |
 |----------|----------|--------|
-| Transform stage interface | src/Feedpipe.Core/Services/ | Not Started |
-| Deduplication stage | src/Feedpipe/Services/ | Not Started |
-| Content enrichment stage | src/Feedpipe/Services/ | Not Started |
-| Storage backend interface | src/Feedpipe.Core/Services/ | Not Started |
-| Alternative storage backend | src/Feedpipe/Services/ | Not Started |
-| Transform pipeline orchestrator | src/Feedpipe/Services/ | Not Started |
-| Transform + storage tests | tests/Feedpipe.Tests/ | Not Started |
+| Transform stage interface | src/Conduit.Core/Services/ | Not Started |
+| Deduplication stage | src/Conduit/Services/ | Not Started |
+| Content enrichment stage | src/Conduit/Services/ | Not Started |
+| Storage backend interface | src/Conduit.Core/Services/ | Not Started |
+| Alternative storage backend | src/Conduit/Services/ | Not Started |
+| Transform pipeline orchestrator | src/Conduit/Services/ | Not Started |
+| Transform + storage tests | tests/Conduit.Tests/ | Not Started |
 
 ## Notes
 

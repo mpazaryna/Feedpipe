@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Feedpipe.Core/Feedpipe.Core.csproj" />
+    <ProjectReference Include="../Conduit.Core/Conduit.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,22 +1,22 @@
 // -----------------------------------------------------------------------
-// Feedpipe.Core - Shared domain models for the Feedpipe pipeline.
+// Conduit.Core - Shared domain models for the Conduit pipeline.
 //
 // This assembly contains the contracts (interfaces) and data models that
 // all other projects in the solution depend on. Keeping these in a
 // separate class library enforces a clean dependency graph:
 //
-//   Feedpipe.Core  <--  Feedpipe (console)
-//                  <--  Feedpipe.Worker
-//                  <--  Feedpipe.Api
-//                  <--  Feedpipe.Cli
-//                  <--  Feedpipe.Tests
+//   Conduit.Core  <--  Conduit (console)
+//                  <--  Conduit.Worker
+//                  <--  Conduit.Api
+//                  <--  Conduit.Cli
+//                  <--  Conduit.Tests
 //
 // By isolating shared types here, we can swap implementations (e.g.,
 // replace RssFeedFetcher with an AtomFeedFetcher) without touching
 // any consuming project.
 // -----------------------------------------------------------------------
 
-namespace Feedpipe.Core.Models;
+namespace Conduit.Core.Models;
 
 /// <summary>
 /// Represents a single item parsed from an RSS or Atom feed.

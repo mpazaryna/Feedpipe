@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// Feedpipe Console Runner
+// Conduit Console Runner
 //
 // This is the simplest way to run the pipeline: a one-shot console app
 // that fetches all configured feeds, writes the results to disk, and exits.
@@ -27,16 +27,16 @@
 //    and writes non-empty results to disk. Errors in one feed don't stop
 //    the others (handled inside RssFeedFetcher).
 //
-// RUN WITH: dotnet run --project src/Feedpipe
+// RUN WITH: dotnet run --project src/Conduit
 // -----------------------------------------------------------------------
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Feedpipe.Core.Services;
-using Feedpipe.Models;
-using Feedpipe.Services;
+using Conduit.Core.Services;
+using Conduit.Models;
+using Conduit.Services;
 
 // -- Load configuration from appsettings.json --
 var configuration = new ConfigurationBuilder()

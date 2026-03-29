@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Feedpipe</RootNamespace>
+    <RootNamespace>Conduit</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Feedpipe.Core/Feedpipe.Core.csproj" />
+    <ProjectReference Include="../Conduit.Core/Conduit.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

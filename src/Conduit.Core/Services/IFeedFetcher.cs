@@ -1,6 +1,6 @@
-using Feedpipe.Core.Models;
+using Conduit.Core.Models;
 
-namespace Feedpipe.Core.Services;
+namespace Conduit.Core.Services;
 
 /// <summary>
 /// Defines the contract for fetching feed items from a remote source.
@@ -25,7 +25,7 @@ namespace Feedpipe.Core.Services;
 ///   </description></item>
 ///   <item><description>
 ///     <b>Decoupling</b> -- consuming code (Worker, Api, Cli) depends on
-///     the interface in Core, not the implementation in Feedpipe. This keeps
+///     the interface in Core, not the implementation in Conduit. This keeps
 ///     the dependency graph clean.
 ///   </description></item>
 /// </list>

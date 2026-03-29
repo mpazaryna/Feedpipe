@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// Feedpipe Worker - Background Service Host
+// Conduit Worker - Background Service Host
 //
 // This is the long-running version of the pipeline. Instead of running
 // once and exiting (like the console app), this runs as a hosted service
@@ -23,14 +23,14 @@
 // 4. host.Run() -- Blocks until shutdown is requested. In production,
 //    this would run as a systemd service, Windows Service, or container.
 //
-// RUN WITH: dotnet run --project src/Feedpipe.Worker
+// RUN WITH: dotnet run --project src/Conduit.Worker
 // STOP WITH: Ctrl+C (sends graceful shutdown signal)
 // -----------------------------------------------------------------------
 
-using Feedpipe.Core.Services;
-using Feedpipe.Models;
-using Feedpipe.Services;
-using Feedpipe.Worker;
+using Conduit.Core.Services;
+using Conduit.Models;
+using Conduit.Services;
+using Conduit.Worker;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()

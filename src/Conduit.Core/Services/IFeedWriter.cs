@@ -1,6 +1,6 @@
-using Feedpipe.Core.Models;
+using Conduit.Core.Models;
 
-namespace Feedpipe.Core.Services;
+namespace Conduit.Core.Services;
 
 /// <summary>
 /// Defines the contract for persisting feed items to a storage backend.

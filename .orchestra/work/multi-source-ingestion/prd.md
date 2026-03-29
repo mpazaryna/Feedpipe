@@ -16,7 +16,7 @@
 
 The current pipeline only understands RSS 2.0. In practice, data worth processing comes in many formats: Atom feeds, REST APIs, EDI transactions, flat files. A pipeline locked to one format forces users to find other tools or build custom integrations for every new source.
 
-This milestone makes Feedpipe useful across domains. A news team needs RSS and Atom. A research team needs PubMed and arxiv APIs. A healthcare team needs EDI 834 enrollment files processed reliably with validation and audit trails. The value of the pipeline scales with the number of sources it can handle without custom code.
+This milestone makes Conduit useful across domains. A news team needs RSS and Atom. A research team needs PubMed and arxiv APIs. A healthcare team needs EDI 834 enrollment files processed reliably with validation and audit trails. The value of the pipeline scales with the number of sources it can handle without custom code.
 
 EDI 834 (ANSI X12 Benefit Enrollment and Maintenance) is the healthcare industry standard for exchanging member enrollment data between employers, payers, and government agencies. It carries enrollments, terminations, demographic changes, and coverage details. Adding it as a source type proves the pipeline architecture works beyond content aggregation -- it handles structured transactional data with strict validation requirements.
 
@@ -24,15 +24,15 @@ EDI 834 (ANSI X12 Benefit Enrollment and Maintenance) is the healthcare industry
 
 | Material | Location | Status |
 |----------|----------|--------|
-| ISourceAdapter interface | src/Feedpipe.Core/Services/ | Not Started |
-| IPipelineRecord base type | src/Feedpipe.Core/Models/ | Not Started |
-| RSS adapter (refactor from RssFeedFetcher) | src/Feedpipe/Services/ | Not Started |
-| Atom feed adapter | src/Feedpipe/Services/ | Not Started |
-| EDI 834 adapter | src/Feedpipe/Services/ | Not Started |
-| EnrollmentRecord model | src/Feedpipe.Core/Models/ | Not Started |
-| Feed format auto-detection | src/Feedpipe/Services/ | Not Started |
-| Concurrent source processing | src/Feedpipe/ | Not Started |
-| Adapter tests (RSS, Atom, 834) | tests/Feedpipe.Tests/ | Not Started |
+| ISourceAdapter interface | src/Conduit.Core/Services/ | Not Started |
+| IPipelineRecord base type | src/Conduit.Core/Models/ | Not Started |
+| RSS adapter (refactor from RssFeedFetcher) | src/Conduit/Services/ | Not Started |
+| Atom feed adapter | src/Conduit/Services/ | Not Started |
+| EDI 834 adapter | src/Conduit/Services/ | Not Started |
+| EnrollmentRecord model | src/Conduit.Core/Models/ | Not Started |
+| Feed format auto-detection | src/Conduit/Services/ | Not Started |
+| Concurrent source processing | src/Conduit/ | Not Started |
+| Adapter tests (RSS, Atom, 834) | tests/Conduit.Tests/ | Not Started |
 
 ## Notes
 

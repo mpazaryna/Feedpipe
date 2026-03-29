@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// Feedpipe API - REST Endpoints for Feed Data
+// Conduit API - REST Endpoints for Feed Data
 //
 // This is an ASP.NET Minimal API that exposes the feed pipeline over HTTP.
 // Minimal APIs are the modern .NET approach for building lightweight HTTP
@@ -31,14 +31,14 @@
 //    /openapi/v1.json in development mode. Tools like Swagger UI can
 //    consume this to generate interactive API documentation.
 //
-// RUN WITH: dotnet run --project src/Feedpipe.Api
+// RUN WITH: dotnet run --project src/Conduit.Api
 // TEST WITH: curl http://localhost:5000/feeds
 // -----------------------------------------------------------------------
 
-using Feedpipe.Core.Models;
-using Feedpipe.Core.Services;
-using Feedpipe.Models;
-using Feedpipe.Services;
+using Conduit.Core.Models;
+using Conduit.Core.Services;
+using Conduit.Models;
+using Conduit.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
