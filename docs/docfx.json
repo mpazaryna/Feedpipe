@@ -35,6 +35,7 @@
       "pdf": true,
       "pdfFileName": "Conduit-API-Reference"
     },
+    "template": ["modern"],
     "dest": "_site"
   }
 }
