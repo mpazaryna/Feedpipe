@@ -8,6 +8,8 @@
 
 # App output directories
 logs/
+TestResults/
+coverage-report/
 
 # DocFX generated site
 docs/_site/
