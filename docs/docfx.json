@@ -24,7 +24,9 @@
     "globalMetadata": {
       "_appTitle": "Conduit",
       "_appFooter": "Conduit - A .NET data pipeline for multi-source data processing",
-      "_enableSearch": true
+      "_enableSearch": true,
+      "_appLogoPath": "",
+      "_appFaviconPath": ""
     },
     "dest": "_site"
   }
