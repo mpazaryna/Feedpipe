@@ -31,6 +31,9 @@ jobs:
       - name: Build documentation
         run: docfx docs/docfx.json
 
+      - name: Generate PDF
+        run: docfx pdf docs/docfx.json
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
