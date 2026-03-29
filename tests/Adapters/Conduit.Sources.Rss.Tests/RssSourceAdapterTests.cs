@@ -287,4 +287,108 @@ public class FeedSourceAdapterTests
 
         Assert.Empty(items);
     }
+
+    // ---- ERROR HANDLING TESTS ----
+
+    [Fact]
+    public async Task IngestAsync_ReturnsEmptyOnHttpError()
+    {
+        var handler = new Mock<HttpMessageHandler>();
+        handler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ThrowsAsync(new HttpRequestException("Connection refused"));
+
+        var httpClient = new HttpClient(handler.Object);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://unreachable.example.com/feed");
+
+        Assert.Empty(items);
+    }
+
+    [Fact]
+    public async Task IngestAsync_ReturnsEmptyOnMalformedXml()
+    {
+        var httpClient = CreateMockHttpClient("this is not xml at all <><><");
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/broken");
+
+        Assert.Empty(items);
+    }
+
+    // ---- ATOM EDGE CASES ----
+
+    [Fact]
+    public async Task IngestAsync_HandlesAtomContentFallback()
+    {
+        var atomWithContent = """
+            <?xml version="1.0"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <entry>
+                <title>Content Entry</title>
+                <link href="https://example.com/content" />
+                <content>Full content body here</content>
+                <published>2024-02-01T08:00:00Z</published>
+              </entry>
+            </feed>
+            """;
+        var httpClient = CreateMockHttpClient(atomWithContent);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        Assert.Single(feedItems);
+        Assert.Equal("Full content body here", feedItems[0].Description);
+    }
+
+    [Fact]
+    public async Task IngestAsync_HandlesAtomPublishedDateFallback()
+    {
+        var atomWithPublished = """
+            <?xml version="1.0"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <entry>
+                <title>Published Entry</title>
+                <link href="https://example.com/pub" />
+                <published>2024-03-01T12:00:00Z</published>
+              </entry>
+            </feed>
+            """;
+        var httpClient = CreateMockHttpClient(atomWithPublished);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        Assert.Equal(new DateTime(2024, 3, 1, 12, 0, 0), feedItems[0].PublishedDate.ToUniversalTime());
+    }
+
+    [Fact]
+    public async Task IngestAsync_HandlesAtomMissingFields()
+    {
+        var minimalAtom = """
+            <?xml version="1.0"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+              <entry>
+                <title>Title Only</title>
+              </entry>
+            </feed>
+            """;
+        var httpClient = CreateMockHttpClient(minimalAtom);
+        var adapter = new FeedSourceAdapter(httpClient, NullLogger<FeedSourceAdapter>.Instance);
+
+        var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
+
+        Assert.Single(feedItems);
+        Assert.Equal("Title Only", feedItems[0].Title);
+        Assert.Equal("", feedItems[0].Link);
+        Assert.Equal("", feedItems[0].Description);
+        Assert.Equal(DateTime.MinValue, feedItems[0].PublishedDate);
+    }
 }
