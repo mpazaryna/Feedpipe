@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <title>Published Entry</title>
+    <link href="https://example.com/pub" />
+    <published>2024-03-01T12:00:00Z</published>
+  </entry>
+</feed>
