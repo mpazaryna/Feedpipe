@@ -105,7 +105,17 @@ app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
     var items = await adapter.IngestAsync(source.Location);
     if (items.Count > 0)
     {
-        await writer.WriteAsync(items, source.Type, source.Name);
+        if (source.Type == "edi834" && File.Exists(source.Location))
+        {
+            var rawDir = Path.Combine(settings.Value.OutputDir, source.Type);
+            Directory.CreateDirectory(rawDir);
+            var rawPath = Path.Combine(rawDir, $"{source.Name}_{DateTime.Now:yyyy-MM-dd_HHmmss}.edi");
+            File.Copy(source.Location, rawPath);
+        }
+        else
+        {
+            await writer.WriteAsync(items, source.Type, source.Name);
+        }
 
         var enrichmentTransforms = sp.GetRequiredService<IReadOnlyList<ITransform>>();
         var pipeline = TransformPipeline.CreateForSource(

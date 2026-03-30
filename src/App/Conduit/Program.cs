@@ -79,8 +79,20 @@ var tasks = appSettings.Sources.Select(async source =>
         var items = await adapter.IngestAsync(source.Location);
         if (items.Count > 0)
         {
-            // Write raw output
-            await writer.WriteAsync(items, source.Type, source.Name);
+            // For file-based sources (EDI 834), preserve the original file in raw/
+            // For other sources, write parsed records as JSON
+            if (source.Type == "edi834" && File.Exists(source.Location))
+            {
+                var rawDir = Path.Combine(appSettings.OutputDir, source.Type);
+                Directory.CreateDirectory(rawDir);
+                var rawPath = Path.Combine(rawDir, $"{source.Name}_{DateTime.Now:yyyy-MM-dd_HHmmss}.edi");
+                File.Copy(source.Location, rawPath);
+                logger.LogInformation("Copied raw EDI file to {Path}", rawPath);
+            }
+            else
+            {
+                await writer.WriteAsync(items, source.Type, source.Name);
+            }
 
             // Transform with cross-run dedup and write enriched output
             var pipeline = TransformPipeline.CreateForSource(
