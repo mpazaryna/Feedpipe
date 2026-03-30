@@ -1,0 +1,78 @@
+[
+  {
+    "record": {
+      "subscriberId": "123456789",
+      "memberName": "DOE, JOHN",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2024-01-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN001",
+      "dedupKey": "123456789|2024-01-01|PLAN001",
+      "id": "123456789",
+      "timestamp": "2024-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "enrichment": {
+      "enrollmentStatus": "active",
+      "relationship": "self"
+    }
+  },
+  {
+    "record": {
+      "subscriberId": "123456790",
+      "memberName": "DOE, JANE",
+      "relationshipCode": "01",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2024-01-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN001",
+      "dedupKey": "123456790|2024-01-01|PLAN001",
+      "id": "123456790",
+      "timestamp": "2024-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "enrichment": {
+      "enrollmentStatus": "active",
+      "relationship": "spouse"
+    }
+  },
+  {
+    "record": {
+      "subscriberId": "987654321",
+      "memberName": "SMITH, BOB",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "024",
+      "coverageStartDate": "2023-06-01T00:00:00",
+      "coverageEndDate": "2024-01-01T00:00:00",
+      "planId": "PLAN002",
+      "dedupKey": "987654321|2023-06-01|PLAN002",
+      "id": "987654321",
+      "timestamp": "2023-06-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "enrichment": {
+      "enrollmentStatus": "terminated",
+      "relationship": "self"
+    }
+  },
+  {
+    "record": {
+      "subscriberId": "987654322",
+      "memberName": "SMITH, ALICE",
+      "relationshipCode": "19",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2023-06-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN002",
+      "dedupKey": "987654322|2023-06-01|PLAN002",
+      "id": "987654322",
+      "timestamp": "2023-06-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "enrichment": {
+      "enrollmentStatus": "active",
+      "relationship": "child"
+    }
+  }
+]

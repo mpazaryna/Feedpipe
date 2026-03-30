@@ -1,0 +1,182 @@
+[
+  {
+    "Title": "New Apple Silicon M4 and M5 HiDPI Limitation on 4K External Displays",
+    "Link": "https://smcleod.net/2026/03/new-apple-silicon-m4-m5-hidpi-limitation-on-4k-external-displays/",
+    "Description": "Article URL: https://smcleod.net/2026/03/new-apple-silicon-m4-m5-hidpi-limitation-on-4k-external-displays/\nComments URL: https://news.ycombinator.com/item?id=47569502\nPoints: 5\n# Comments: 0",
+    "PublishedDate": "2026-03-29T21:43:20-04:00",
+    "Id": "https://smcleod.net/2026/03/new-apple-silicon-m4-m5-hidpi-limitation-on-4k-external-displays/",
+    "Timestamp": "2026-03-29T21:43:20-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Philly courts will ban all smart eyeglasses starting next week",
+    "Link": "https://www.inquirer.com/news/philadelphia/smart-glasses-ai-meta-courts-20260326.html",
+    "Description": "Article URL: https://www.inquirer.com/news/philadelphia/smart-glasses-ai-meta-courts-20260326.html\nComments URL: https://news.ycombinator.com/item?id=47569471\nPoints: 58\n# Comments: 22",
+    "PublishedDate": "2026-03-29T21:38:17-04:00",
+    "Id": "https://www.inquirer.com/news/philadelphia/smart-glasses-ai-meta-courts-20260326.html",
+    "Timestamp": "2026-03-29T21:38:17-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "DoesItAgeVerify: The age verification status of Open Source Operating Systems",
+    "Link": "https://github.com/BryanLunduke/DoesItAgeVerify",
+    "Description": "Article URL: https://github.com/BryanLunduke/DoesItAgeVerify\nComments URL: https://news.ycombinator.com/item?id=47569167\nPoints: 15\n# Comments: 1",
+    "PublishedDate": "2026-03-29T20:52:06-04:00",
+    "Id": "https://github.com/BryanLunduke/DoesItAgeVerify",
+    "Timestamp": "2026-03-29T20:52:06-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "There is No Spoon. A software engineers primer for demystified ML",
+    "Link": "https://github.com/dreddnafious/thereisnospoon",
+    "Description": "Article URL: https://github.com/dreddnafious/thereisnospoon\nComments URL: https://news.ycombinator.com/item?id=47568080\nPoints: 64\n# Comments: 14",
+    "PublishedDate": "2026-03-29T18:28:11-04:00",
+    "Id": "https://github.com/dreddnafious/thereisnospoon",
+    "Timestamp": "2026-03-29T18:28:11-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Coding Agents Could Make Free Software Matter Again",
+    "Link": "https://www.gjlondon.com/blog/ai-agents-could-make-free-software-matter-again/",
+    "Description": "Article URL: https://www.gjlondon.com/blog/ai-agents-could-make-free-software-matter-again/\nComments URL: https://news.ycombinator.com/item?id=47568028\nPoints: 115\n# Comments: 114",
+    "PublishedDate": "2026-03-29T18:21:34-04:00",
+    "Id": "https://www.gjlondon.com/blog/ai-agents-could-make-free-software-matter-again/",
+    "Timestamp": "2026-03-29T18:21:34-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Claude Code runs Git reset \u2013hard origin/main against project repo every 10 mins",
+    "Link": "https://github.com/anthropics/claude-code/issues/40710",
+    "Description": "Article URL: https://github.com/anthropics/claude-code/issues/40710\nComments URL: https://news.ycombinator.com/item?id=47567969\nPoints: 187\n# Comments: 115",
+    "PublishedDate": "2026-03-29T18:15:06-04:00",
+    "Id": "https://github.com/anthropics/claude-code/issues/40710",
+    "Timestamp": "2026-03-29T18:15:06-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Show HN: Crazierl \u2013 An Erlang Operating System",
+    "Link": "https://crazierl.org/demo/",
+    "Description": "Crazierl is an experimental/hobby operating system based around BEAM.I\u0027ve linked the browser based demo; I don\u2019t recommend using a phone; it does work, slowly, on the phones I tested, but it\u2019s very awkward to use. You can share a link with a hashtag with your friends and click the consent checkbox, and it (should) link up into dist and I\u2019ve also included a chat application you can start with chat:start(). (quit chat with /quit, or use the shell menu with ctrl-g to switch between shells etc).The browser demo relies on the v86 javascript x86 virtual machine. You can also run Crazierl on a real x86 system, but I\u2019ve had mixed luck on modern systems, it uses some esoteric legacy VGA features and support for that isn\u2019t getting better.Crazierl is fairly limited: 32-bit x86, BIOS boot, only two NIC drivers virtio-net and realtek 8168. But it\u0027s got enough to become part of an Erlang dist cluster. It also supports SMP, but it\u2019s crashy with high core counts in qemu; there\u2019s almost certainly several concurrency bugs in the kernel. There\u0027s also a lot of excess tcp debug spew (sorry).Source code is available (Apache) https://github.com/russor/crazierl/\n\nComments URL: https://news.ycombinator.com/item?id=47567049\nPoints: 46\n# Comments: 14",
+    "PublishedDate": "2026-03-29T16:38:26-04:00",
+    "Id": "https://crazierl.org/demo/",
+    "Timestamp": "2026-03-29T16:38:26-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "The road signs that teach travellers about France",
+    "Link": "https://www.bbc.com/travel/article/20260327-the-road-signs-that-teach-travellers-about-france",
+    "Description": "Article URL: https://www.bbc.com/travel/article/20260327-the-road-signs-that-teach-travellers-about-france\nComments URL: https://news.ycombinator.com/item?id=47566960\nPoints: 60\n# Comments: 17",
+    "PublishedDate": "2026-03-29T16:30:02-04:00",
+    "Id": "https://www.bbc.com/travel/article/20260327-the-road-signs-that-teach-travellers-about-france",
+    "Timestamp": "2026-03-29T16:30:02-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "ChatGPT won\u0027t let you type until Cloudflare reads your React state",
+    "Link": "https://www.buchodi.com/chatgpt-wont-let-you-type-until-cloudflare-reads-your-react-state-i-decrypted-the-program-that-does-it/",
+    "Description": "Article URL: https://www.buchodi.com/chatgpt-wont-let-you-type-until-cloudflare-reads-your-react-state-i-decrypted-the-program-that-does-it/\nComments URL: https://news.ycombinator.com/item?id=47566865\nPoints: 352\n# Comments: 268",
+    "PublishedDate": "2026-03-29T16:21:05-04:00",
+    "Id": "https://www.buchodi.com/chatgpt-wont-let-you-type-until-cloudflare-reads-your-react-state-i-decrypted-the-program-that-does-it/",
+    "Timestamp": "2026-03-29T16:21:05-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Midnight train from GA: A view of America from the tracks as airports struggle",
+    "Link": "https://isp.netscape.com/news/story/0001/20260329/e4d8ea591b3b036142c2bf2dee7dff5a",
+    "Description": "Article URL: https://isp.netscape.com/news/story/0001/20260329/e4d8ea591b3b036142c2bf2dee7dff5a\nComments URL: https://news.ycombinator.com/item?id=47566653\nPoints: 74\n# Comments: 64",
+    "PublishedDate": "2026-03-29T16:00:02-04:00",
+    "Id": "https://isp.netscape.com/news/story/0001/20260329/e4d8ea591b3b036142c2bf2dee7dff5a",
+    "Timestamp": "2026-03-29T16:00:02-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "The Cognitive Dark Forest",
+    "Link": "https://ryelang.org/blog/posts/cognitive-dark-forest/",
+    "Description": "Article URL: https://ryelang.org/blog/posts/cognitive-dark-forest/\nComments URL: https://news.ycombinator.com/item?id=47566442\nPoints: 280\n# Comments: 126",
+    "PublishedDate": "2026-03-29T15:36:21-04:00",
+    "Id": "https://ryelang.org/blog/posts/cognitive-dark-forest/",
+    "Timestamp": "2026-03-29T15:36:21-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "More on Version Control",
+    "Link": "https://bramcohen.com/p/more-on-version-control",
+    "Description": "Article URL: https://bramcohen.com/p/more-on-version-control\nComments URL: https://news.ycombinator.com/item?id=47566332\nPoints: 59\n# Comments: 9",
+    "PublishedDate": "2026-03-29T15:26:14-04:00",
+    "Id": "https://bramcohen.com/p/more-on-version-control",
+    "Timestamp": "2026-03-29T15:26:14-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Kyushu Railway Company Train Varieties",
+    "Link": "https://www.jrkyushu.co.jp/english/train/index.html",
+    "Description": "Article URL: https://www.jrkyushu.co.jp/english/train/index.html\nComments URL: https://news.ycombinator.com/item?id=47566140\nPoints: 62\n# Comments: 9",
+    "PublishedDate": "2026-03-29T15:08:07-04:00",
+    "Id": "https://www.jrkyushu.co.jp/english/train/index.html",
+    "Timestamp": "2026-03-29T15:08:07-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "C\u002B\u002B26 is done ISO C\u002B\u002B standards meeting, Trip Report",
+    "Link": "https://herbsutter.com/2026/03/29/c26-is-done-trip-report-march-2026-iso-c-standards-meeting-london-croydon-uk/",
+    "Description": "Article URL: https://herbsutter.com/2026/03/29/c26-is-done-trip-report-march-2026-iso-c-standards-meeting-london-croydon-uk/\nComments URL: https://news.ycombinator.com/item?id=47565365\nPoints: 171\n# Comments: 138",
+    "PublishedDate": "2026-03-29T13:46:12-04:00",
+    "Id": "https://herbsutter.com/2026/03/29/c26-is-done-trip-report-march-2026-iso-c-standards-meeting-london-croydon-uk/",
+    "Timestamp": "2026-03-29T13:46:12-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Neovim 0.12.0",
+    "Link": "https://github.com/neovim/neovim/releases/tag/v0.12.0",
+    "Description": "Article URL: https://github.com/neovim/neovim/releases/tag/v0.12.0\nComments URL: https://news.ycombinator.com/item?id=47565316\nPoints: 298\n# Comments: 142",
+    "PublishedDate": "2026-03-29T13:39:55-04:00",
+    "Id": "https://github.com/neovim/neovim/releases/tag/v0.12.0",
+    "Timestamp": "2026-03-29T13:39:55-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "The rise and fall of IBM\u0027s 4 Pi aerospace computers: an illustrated history",
+    "Link": "https://www.righto.com/2026/03/ibm-4-pi-computer-history.html",
+    "Description": "Article URL: https://www.righto.com/2026/03/ibm-4-pi-computer-history.html\nComments URL: https://news.ycombinator.com/item?id=47564579\nPoints: 74\n# Comments: 23",
+    "PublishedDate": "2026-03-29T12:26:55-04:00",
+    "Id": "https://www.righto.com/2026/03/ibm-4-pi-computer-history.html",
+    "Timestamp": "2026-03-29T12:26:55-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Voyager 1 runs on 69 KB of memory and an 8-track tape recorder",
+    "Link": "https://techfixated.com/a-1977-time-capsule-voyager-1-runs-on-69-kb-of-memory-and-an-8-track-tape-recorder-4/",
+    "Description": "Article URL: https://techfixated.com/a-1977-time-capsule-voyager-1-runs-on-69-kb-of-memory-and-an-8-track-tape-recorder-4/\nComments URL: https://news.ycombinator.com/item?id=47564421\nPoints: 408\n# Comments: 171",
+    "PublishedDate": "2026-03-29T12:12:22-04:00",
+    "Id": "https://techfixated.com/a-1977-time-capsule-voyager-1-runs-on-69-kb-of-memory-and-an-8-track-tape-recorder-4/",
+    "Timestamp": "2026-03-29T12:12:22-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Police used AI facial recognition to wrongly arrest TN woman for crimes in ND",
+    "Link": "https://www.cnn.com/2026/03/29/us/angela-lipps-ai-facial-recognition",
+    "Description": "Article URL: https://www.cnn.com/2026/03/29/us/angela-lipps-ai-facial-recognition\nComments URL: https://news.ycombinator.com/item?id=47563384\nPoints: 361\n# Comments: 156",
+    "PublishedDate": "2026-03-29T10:20:23-04:00",
+    "Id": "https://www.cnn.com/2026/03/29/us/angela-lipps-ai-facial-recognition",
+    "Timestamp": "2026-03-29T10:20:23-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Miasma: A tool to trap AI web scrapers in an endless poison pit",
+    "Link": "https://github.com/austin-weeks/miasma",
+    "Description": "Article URL: https://github.com/austin-weeks/miasma\nComments URL: https://news.ycombinator.com/item?id=47561819\nPoints: 294\n# Comments: 212",
+    "PublishedDate": "2026-03-29T06:10:12-04:00",
+    "Id": "https://github.com/austin-weeks/miasma",
+    "Timestamp": "2026-03-29T06:10:12-04:00",
+    "SourceType": "rss"
+  },
+  {
+    "Title": "Nitrile and latex gloves may cause overestimation of microplastics",
+    "Link": "https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/",
+    "Description": "Article URL: https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/\nComments URL: https://news.ycombinator.com/item?id=47561711\nPoints: 518\n# Comments: 234",
+    "PublishedDate": "2026-03-29T05:46:58-04:00",
+    "Id": "https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/",
+    "Timestamp": "2026-03-29T05:46:58-04:00",
+    "SourceType": "rss"
+  }
+]

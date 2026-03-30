@@ -7,9 +7,6 @@
 .env
 
 # App output directories
-data/raw/
-data/curated/
-data/rejected/
 logs/
 TestResults/
 coverage-report/
