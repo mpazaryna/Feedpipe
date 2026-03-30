@@ -7,6 +7,7 @@ using Conduit.Transforms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using Xunit.Abstractions;
 
 namespace Conduit.Transforms.Tests;
 
@@ -17,9 +18,11 @@ public class IntegrationTests : IDisposable
     private readonly TransformPipeline _pipeline;
     private readonly JsonOutputWriter _rawWriter;
     private readonly JsonTransformedOutputWriter _transformedWriter;
+    private readonly ITestOutputHelper _testOutput;
 
-    public IntegrationTests()
+    public IntegrationTests(ITestOutputHelper testOutput)
     {
+        _testOutput = testOutput;
         var baseDir = Path.Combine(Path.GetTempPath(), $"conduit-integration-{Guid.NewGuid()}");
         _rawDir = Path.Combine(baseDir, "raw");
         _transformedDir = Path.Combine(baseDir, "transformed");
@@ -266,7 +269,12 @@ public class IntegrationTests : IDisposable
         Assert.NotEmpty(curatedFiles);
         Assert.NotEmpty(rejectedFiles);
 
-        var rejectedJson = await File.ReadAllTextAsync(rejectedFiles[^1]);
+        // Find most recent rejected file (not arbitrary filesystem order)
+        var mostRecentRejected = rejectedFiles
+            .Select(f => new FileInfo(f))
+            .OrderByDescending(fi => fi.LastWriteTime)
+            .First();
+        var rejectedJson = await File.ReadAllTextAsync(mostRecentRejected.FullName);
         using var doc = JsonDocument.Parse(rejectedJson);
         Assert.Equal(3, doc.RootElement.GetArrayLength());
     }
@@ -296,11 +304,16 @@ public class IntegrationTests : IDisposable
 
         await writer.WriteAsync(records, "edi834", "benefits-enrollment");
 
-        // Verify the file exists in the real output directory
+        // Find the file we just wrote (most recent by timestamp, not arbitrary order)
         var files = Directory.GetFiles(Path.Combine(rejectedDir, "edi834"), "*.json");
-        Assert.NotEmpty(files);
-
-        var json = await File.ReadAllTextAsync(files[^1]);
+        var mostRecent = files
+            .Select(f => new FileInfo(f))
+            .OrderByDescending(fi => fi.LastWriteTime)
+            .First();
+        
+        _testOutput.WriteLine($"Checking most recent file: {mostRecent.FullName}");
+        
+        var json = await File.ReadAllTextAsync(mostRecent.FullName);
         using var doc = JsonDocument.Parse(json);
         Assert.Equal(2, doc.RootElement.GetArrayLength());
     }
