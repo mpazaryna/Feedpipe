@@ -1,0 +1,116 @@
+#!/bin/sh
+# Block commits directly to main — use ticket branches instead.
+branch="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$branch" = "main" ]; then
+    echo "ERROR: Direct commits to main are not allowed."
+    echo "Create a ticket branch first: git checkout -b ticket/{id}-{name}"
+    exit 1
+fi
+
+# Auto-regenerate xcodeproj when source files change.
+# XcodeGen auto-discovers files from native/pab/pab/, so adding/removing
+# files there requires regeneration to keep the local xcodeproj in sync.
+# The xcodeproj is gitignored — this keeps the local build working.
+if command -v xcodegen >/dev/null 2>&1; then
+    staged_pab_files=$(git diff --cached --name-only -- 'native/pab/pab/' 'native/pab/project.yml')
+    if [ -n "$staged_pab_files" ]; then
+        echo "🔄 [pre-commit] Regenerating xcodeproj (source files changed)..."
+        (cd native/pab && xcodegen generate --quiet 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            echo "✅ [pre-commit] xcodeproj regenerated."
+        else
+            echo "⚠️ [pre-commit] xcodegen generate failed — commit continues without regeneration."
+        fi
+    fi
+fi
+
+# ADR-000: PlatformConfig compliance gate.
+# Reject commits that introduce hardcoded layout values in SwiftUI view bodies.
+# This catches violations an agentic workflow (tk-agent) would otherwise miss,
+# since there's no human reviewer to enforce the pattern.
+#
+# Checks staged .swift files under native/pab/pab/ for patterns like:
+#   .padding(16)  .spacing(8)  .frame(height: 150)  .cornerRadius(8)
+#   .font(.system(size: 15))
+#
+# Excludes: PlatformConfig.swift, test files, config initializers, previews, comments.
+
+staged_swift=$(git diff --cached --name-only --diff-filter=ACM -- 'native/pab/pab/' | \
+    grep '\.swift$' | \
+    grep -v 'PlatformConfig\.swift' | \
+    grep -v 'Tests/' | \
+    grep -v 'pabTests/')
+
+if [ -n "$staged_swift" ]; then
+    violations=""
+
+    for file in $staged_swift; do
+        # Get only the added/modified lines from the staged diff (+ lines only).
+        # Filter out config initializer blocks, preview blocks, and comments.
+        added_lines=$(git diff --cached -U0 "$file" | \
+            grep '^+' | grep -v '^+++' | grep -v '^+\s*//' | \
+            grep -v 'static let current' | \
+            grep -v 'static var current' | \
+            grep -v 'static func current' | \
+            grep -v 'return Self(' | \
+            grep -v 'return _' | \
+            grep -v '#Preview')
+
+        if [ -z "$added_lines" ]; then
+            continue
+        fi
+
+        # Pattern: .padding(<number>) or .padding(.horizontal, <number>) etc.
+        # Matches .padding(N), .padding(.x, N) but not .padding(config.X)
+        pad_hits=$(echo "$added_lines" | grep -nE '\.padding\([^)]*[0-9]+[^)]*\)' | \
+            grep -v 'config\.' | grep -v 'base\.' | grep -v 'opacity' || true)
+
+        # Pattern: spacing: <number> (not spacing: config.X or spacing: 0)
+        space_hits=$(echo "$added_lines" | grep -nE 'spacing:\s*[1-9][0-9]*' | \
+            grep -v 'config\.' | grep -v 'base\.' || true)
+
+        # Pattern: .frame(width/height/minWidth/maxWidth: <number>)
+        frame_hits=$(echo "$added_lines" | grep -nE '\.frame\([^)]*[0-9]+[^)]*\)' | \
+            grep -v 'config\.' | grep -v 'base\.' | \
+            grep -v 'maxWidth: \.infinity' | grep -v 'maxHeight: \.infinity' || true)
+
+        # Pattern: .cornerRadius(<number>)
+        corner_hits=$(echo "$added_lines" | grep -nE '\.cornerRadius\([0-9]+' | \
+            grep -v 'config\.' | grep -v 'base\.' || true)
+
+        # Pattern: .font(.system(size: <number>))
+        font_hits=$(echo "$added_lines" | grep -nE '\.font\(\.system\(size:\s*[0-9]+' | \
+            grep -v 'config\.' | grep -v 'base\.' || true)
+
+        file_violations=""
+        [ -n "$pad_hits" ] && file_violations="${file_violations}${pad_hits}\n"
+        [ -n "$space_hits" ] && file_violations="${file_violations}${space_hits}\n"
+        [ -n "$frame_hits" ] && file_violations="${file_violations}${frame_hits}\n"
+        [ -n "$corner_hits" ] && file_violations="${file_violations}${corner_hits}\n"
+        [ -n "$font_hits" ] && file_violations="${file_violations}${font_hits}\n"
+
+        if [ -n "$file_violations" ]; then
+            violations="${violations}\n  ${file}:\n$(echo "$file_violations" | sed 's/^/    /')"
+        fi
+    done
+
+    if [ -n "$violations" ]; then
+        echo ""
+        echo "❌ [pre-commit] ADR-000 PlatformConfig violation(s) detected!"
+        echo ""
+        echo "Hardcoded layout values found in staged view files:"
+        printf "%b\n" "$violations"
+        echo ""
+        echo "All layout values must use config properties (ADR-000):"
+        echo "  .padding(config.cardPadding)     not .padding(16)"
+        echo "  spacing: config.sectionSpacing    not spacing: 12"
+        echo "  .frame(height: config.cardHeight) not .frame(height: 150)"
+        echo ""
+        echo "If this is a config initializer or preview block, the check may be"
+        echo "a false positive. Review the flagged lines — if they are inside a"
+        echo "config struct initializer (static var/func current) or #Preview block,"
+        echo "you can bypass with: git commit --no-verify"
+        echo ""
+        exit 1
+    fi
+fi
