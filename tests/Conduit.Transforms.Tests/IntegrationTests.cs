@@ -5,6 +5,7 @@ using Conduit.Services;
 using Conduit.Sources.Edi834.Models;
 using Conduit.Transforms;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace Conduit.Transforms.Tests;
@@ -197,6 +198,40 @@ public class IntegrationTests : IDisposable
         Assert.Single(transformed2);
         Assert.Equal("https://example.com/3", transformed2[0].Record.Id);
         Assert.True(transformed2[0].Enrichment.ContainsKey("keywords"));
+    }
+
+    [Fact]
+    public async Task EndToEnd_RejectedWriter_Writes_To_Data_Rejected()
+    {
+        // Writes to the real data/rejected/ directory so you can inspect the output.
+        // Run: dotnet test --filter EndToEnd_RejectedWriter_Writes_To_Data_Rejected
+        // Then open: data/rejected/edi834/
+        var rejectedDir = Path.Combine(
+            Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "data", "rejected");
+
+        var writer = new JsonRejectedOutputWriter(rejectedDir, NullLogger<JsonRejectedOutputWriter>.Instance);
+
+        var records = new List<RejectedRecord<IPipelineRecord>>
+        {
+            new(new EnrollmentRecord("SUB999", "Invalid, Member", "18", "999",
+                    new DateTime(2026, 1, 1), new DateTime(2025, 1, 1), "PLAN-X"),
+                ["MaintenanceTypeCode '999' is not a valid X12 code",
+                 "CoverageEndDate is before CoverageStartDate"]),
+
+            new(new EnrollmentRecord("SUB888", "", "18", "021",
+                    new DateTime(2026, 1, 1), null, "PLAN-Y"),
+                ["MemberName is required"])
+        };
+
+        await writer.WriteAsync(records, "edi834", "benefits-enrollment");
+
+        // Verify the file exists in the real output directory
+        var files = Directory.GetFiles(Path.Combine(rejectedDir, "edi834"), "*.json");
+        Assert.NotEmpty(files);
+
+        var json = await File.ReadAllTextAsync(files[^1]);
+        using var doc = JsonDocument.Parse(json);
+        Assert.Equal(2, doc.RootElement.GetArrayLength());
     }
 
     [Fact]

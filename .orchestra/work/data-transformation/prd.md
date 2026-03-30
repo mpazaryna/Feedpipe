@@ -81,6 +81,7 @@ A dedicated **Storage Backends** milestone could be considered in the future to 
 | Storage abstraction | A common interface for persisting processed records | Not Started |
 | Second storage backend | At least one alternative to filesystem JSON (e.g., SQLite) | Not Started |
 | Tests | Coverage for each transformation stage and storage backend | Not Started |
+| Rejected data tier | `data/rejected/` output for invalid records with error details | Not Started — [86e0mhara-rejected-data-tier](../86e0mhara-rejected-data-tier/prd.md) |
 
 ## Notes
 

@@ -56,7 +56,7 @@ var services = new ServiceCollection();
 services.AddLogging(builder => builder.AddSerilog(Log.Logger));
 services.AddHttpClient();
 
-services.AddConduitPipeline(appSettings.OutputDir, appSettings.CuratedOutputDir);
+services.AddConduitPipeline(appSettings.OutputDir, appSettings.CuratedOutputDir, appSettings.RejectedOutputDir);
 
 var provider = services.BuildServiceProvider();
 

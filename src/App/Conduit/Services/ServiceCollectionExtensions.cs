@@ -16,16 +16,18 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Registers all source adapters as keyed services, the raw output writer,
-    /// the curated output writer, and the enrichment transforms.
+    /// the curated output writer, the rejected output writer, and the enrichment transforms.
     /// </summary>
     /// <param name="services">The service collection to configure.</param>
     /// <param name="rawOutputDir">Directory for raw output (e.g., "data/raw").</param>
     /// <param name="curatedOutputDir">Directory for curated output (e.g., "data/curated").</param>
+    /// <param name="rejectedOutputDir">Directory for rejected output (e.g., "data/rejected").</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddConduitPipeline(
         this IServiceCollection services,
         string rawOutputDir,
-        string curatedOutputDir)
+        string curatedOutputDir,
+        string rejectedOutputDir = "data/rejected")
     {
         // Source adapters
         services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
@@ -47,6 +49,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ITransformedOutputWriter>(sp =>
             new JsonTransformedOutputWriter(curatedOutputDir,
                 sp.GetRequiredService<ILogger<JsonTransformedOutputWriter>>()));
+
+        // Rejected output writer
+        services.AddSingleton<IRejectedOutputWriter>(sp =>
+            new JsonRejectedOutputWriter(rejectedOutputDir,
+                sp.GetRequiredService<ILogger<JsonRejectedOutputWriter>>()));
 
         // Enrichment transforms (shared across all sources)
         services.AddSingleton<IReadOnlyList<ITransform>>(new List<ITransform>

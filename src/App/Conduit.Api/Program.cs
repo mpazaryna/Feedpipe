@@ -33,7 +33,8 @@ builder.Services.AddHttpClient();
 var appSection = builder.Configuration.GetSection("App");
 builder.Services.AddConduitPipeline(
     appSection["OutputDir"] ?? "data/raw",
-    appSection["CuratedOutputDir"] ?? "data/curated");
+    appSection["CuratedOutputDir"] ?? "data/curated",
+    appSection["RejectedOutputDir"] ?? "data/rejected");
 
 var app = builder.Build();
 
