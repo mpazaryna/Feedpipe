@@ -42,6 +42,14 @@ Adds a composable transformation layer between ingestion and storage. Handles de
 - Dependency: Multi-Source Ingestion
 - Status: Not Started
 
+### Storage Backends
+
+Introduces persistent storage options beyond the local filesystem — database backends (SQLite, PostgreSQL), cloud storage (S3, Azure Blob), or hybrid strategies. Builds on the storage abstraction established in the Data Transformation milestone so that switching or adding backends is a configuration change, not a code change.
+
+- PRD: To be created
+- Dependency: Data Transformation
+- Status: Not Started
+
 ## References
 
 - ADR-000: [The Score](adr/ADR-000-the-score.md)

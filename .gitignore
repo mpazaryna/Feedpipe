@@ -7,9 +7,15 @@
 .env
 
 # App output directories
+data/raw/
+data/curated/
+data/rejected/
 logs/
 TestResults/
 coverage-report/
+
+# Claude Code local config
+.claude/
 
 # DocFX generated site
 docs/_site/

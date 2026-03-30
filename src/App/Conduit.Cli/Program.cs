@@ -15,13 +15,9 @@
 // -----------------------------------------------------------------------
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.Text.Json;
-using Conduit.Core.Models;
 
-var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-var dirOption = new Option<string>("--dir", () => "fetched", "Directory containing output JSON files");
+var dirOption = new Option<string>("--dir", () => "data/curated", "Directory containing curated output JSON files");
 
 var rootCommand = new RootCommand("Conduit CLI - search and filter pipeline output");
 
@@ -36,24 +32,39 @@ searchCommand.SetHandler((term, dir) =>
         return;
     }
 
-    var files = Directory.GetFiles(dir, "*.json");
+    var files = Directory.EnumerateFiles(dir, "*.json", SearchOption.AllDirectories).ToArray();
     var matchCount = 0;
 
     foreach (var file in files)
     {
         var json = File.ReadAllText(file);
-        var items = JsonSerializer.Deserialize<List<FeedItem>>(json, jsonOptions) ?? [];
+        using var doc = JsonDocument.Parse(json);
 
-        var matches = items.Where(i =>
-            i.Title.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-            i.Description.Contains(term, StringComparison.OrdinalIgnoreCase));
-
-        foreach (var item in matches)
+        foreach (var element in doc.RootElement.EnumerateArray())
         {
-            matchCount++;
-            Console.WriteLine($"[{item.PublishedDate:yyyy-MM-dd}] {item.Title}");
-            Console.WriteLine($"  {item.Link}");
-            Console.WriteLine();
+            var record = element.TryGetProperty("record", out var r) ? r : element;
+            var title = record.TryGetProperty("title", out var t) ? t.GetString() ?? "" : "";
+            var description = record.TryGetProperty("description", out var d) ? d.GetString() ?? "" : "";
+            var link = record.TryGetProperty("link", out var l) ? l.GetString() ?? "" : "";
+            var date = record.TryGetProperty("publishedDate", out var p) ? p.GetString() ?? "" : "";
+
+            if (title.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                description.Contains(term, StringComparison.OrdinalIgnoreCase))
+            {
+                matchCount++;
+                Console.WriteLine($"[{date}] {title}");
+                if (!string.IsNullOrEmpty(link))
+                    Console.WriteLine($"  {link}");
+
+                if (element.TryGetProperty("enrichment", out var enrichment))
+                {
+                    foreach (var prop in enrichment.EnumerateObject())
+                    {
+                        Console.WriteLine($"  {prop.Name}: {prop.Value}");
+                    }
+                }
+                Console.WriteLine();
+            }
         }
     }
 
@@ -71,7 +82,7 @@ listCommand.SetHandler((dir, limit) =>
         return;
     }
 
-    var latestFile = Directory.GetFiles(dir, "*.json")
+    var latestFile = Directory.EnumerateFiles(dir, "*.json", SearchOption.AllDirectories)
         .OrderByDescending(f => f)
         .FirstOrDefault();
 
@@ -82,15 +93,30 @@ listCommand.SetHandler((dir, limit) =>
     }
 
     var json = File.ReadAllText(latestFile);
-    var items = JsonSerializer.Deserialize<List<FeedItem>>(json, jsonOptions) ?? [];
+    using var doc = JsonDocument.Parse(json);
+    var items = doc.RootElement.EnumerateArray().ToList();
 
     Console.WriteLine($"Latest output: {Path.GetFileName(latestFile)}");
     Console.WriteLine(new string('-', 60));
 
-    foreach (var item in items.Take(limit))
+    foreach (var element in items.Take(limit))
     {
-        Console.WriteLine($"[{item.PublishedDate:yyyy-MM-dd}] {item.Title}");
-        Console.WriteLine($"  {item.Link}");
+        var record = element.TryGetProperty("record", out var r) ? r : element;
+        var title = record.TryGetProperty("title", out var t) ? t.GetString() ?? "" : "";
+        var link = record.TryGetProperty("link", out var l) ? l.GetString() ?? "" : "";
+        var date = record.TryGetProperty("publishedDate", out var p) ? p.GetString() ?? "" : "";
+
+        Console.WriteLine($"[{date}] {title}");
+        if (!string.IsNullOrEmpty(link))
+            Console.WriteLine($"  {link}");
+
+        if (element.TryGetProperty("enrichment", out var enrichment))
+        {
+            foreach (var prop in enrichment.EnumerateObject())
+            {
+                Console.WriteLine($"  {prop.Name}: {prop.Value}");
+            }
+        }
         Console.WriteLine();
     }
 
@@ -107,14 +133,14 @@ statsCommand.SetHandler((dir) =>
         return;
     }
 
-    var files = Directory.GetFiles(dir, "*.json");
+    var files = Directory.EnumerateFiles(dir, "*.json", SearchOption.AllDirectories).ToArray();
     var totalItems = 0;
 
     foreach (var file in files)
     {
         var json = File.ReadAllText(file);
-        var items = JsonSerializer.Deserialize<List<FeedItem>>(json, jsonOptions) ?? [];
-        totalItems += items.Count;
+        using var doc = JsonDocument.Parse(json);
+        totalItems += doc.RootElement.GetArrayLength();
     }
 
     Console.WriteLine($"Output files:   {files.Length}");

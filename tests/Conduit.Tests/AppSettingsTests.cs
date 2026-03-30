@@ -12,7 +12,8 @@ public class AppSettingsTests
     {
         var settings = new AppSettings();
 
-        Assert.Equal("data", settings.OutputDir);
+        Assert.Equal("data/raw", settings.OutputDir);
+        Assert.Equal("data/curated", settings.CuratedOutputDir);
         Assert.Equal("logs", settings.LogsDir);
         Assert.Empty(settings.Sources);
     }

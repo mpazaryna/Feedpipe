@@ -32,8 +32,11 @@ public record EnrollmentRecord(
     DateTime CoverageStartDate,
     DateTime? CoverageEndDate,
     string PlanId
-) : IPipelineRecord
+) : IPipelineRecord, ICompositeDedupKey
 {
+    /// <inheritdoc />
+    public string DedupKey => $"{SubscriberId}|{CoverageStartDate:yyyy-MM-dd}|{PlanId}";
+
     /// <inheritdoc />
     public string Id => SubscriberId;
 

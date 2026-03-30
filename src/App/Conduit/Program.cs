@@ -28,9 +28,6 @@ using Serilog;
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
-using Conduit.Sources.Rss.Services;
-using Conduit.Sources.Edi834.Services;
-using Conduit.Sources.Zotero.Services;
 
 // -- Load configuration from appsettings.json --
 var configuration = new ConfigurationBuilder()
@@ -59,25 +56,15 @@ var services = new ServiceCollection();
 services.AddLogging(builder => builder.AddSerilog(Log.Logger));
 services.AddHttpClient();
 
-// Register adapters as keyed services, resolved by SourceSettings.Type
-services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
-    new FeedSourceAdapter(
-        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
-services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
-services.AddKeyedScoped<ISourceAdapter>("zotero", (sp, _) =>
-    new ZoteroSourceAdapter(
-        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<ZoteroSourceAdapter>>()));
-
-services.AddSingleton<IOutputWriter>(sp =>
-    new JsonOutputWriter(appSettings.OutputDir, sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
+services.AddConduitPipeline(appSettings.OutputDir, appSettings.CuratedOutputDir);
 
 var provider = services.BuildServiceProvider();
 
 // -- Run the pipeline --
 var logger = provider.GetRequiredService<ILogger<Program>>();
 var writer = provider.GetRequiredService<IOutputWriter>();
+var transformedWriter = provider.GetRequiredService<ITransformedOutputWriter>();
+var enrichmentTransforms = provider.GetRequiredService<IReadOnlyList<ITransform>>();
 
 logger.LogInformation("Starting pipeline");
 
@@ -92,7 +79,17 @@ var tasks = appSettings.Sources.Select(async source =>
         var items = await adapter.IngestAsync(source.Location);
         if (items.Count > 0)
         {
+            // Write raw output
             await writer.WriteAsync(items, source.Type, source.Name);
+
+            // Transform with cross-run dedup and write enriched output
+            var pipeline = TransformPipeline.CreateForSource(
+                transformedWriter, source.Type, enrichmentTransforms);
+            var transformed = await pipeline.ExecuteAsync(items);
+            if (transformed.Count > 0)
+            {
+                await transformedWriter.WriteAsync(transformed, source.Type, source.Name);
+            }
         }
     }
     finally

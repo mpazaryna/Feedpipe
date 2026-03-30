@@ -37,8 +37,11 @@ public class SourceSettings
 /// </remarks>
 public class AppSettings
 {
-    /// <summary>Directory where output JSON files are written.</summary>
-    public string OutputDir { get; init; } = "data";
+    /// <summary>Directory where raw output JSON files are written (landing zone).</summary>
+    public string OutputDir { get; init; } = "data/raw";
+
+    /// <summary>Directory where curated (deduplicated, enriched) output is written.</summary>
+    public string CuratedOutputDir { get; init; } = "data/curated";
 
     /// <summary>Directory where Serilog writes daily rolling log files.</summary>
     public string LogsDir { get; init; } = "logs";

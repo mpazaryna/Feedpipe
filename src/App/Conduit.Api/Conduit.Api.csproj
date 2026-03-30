@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Core/Conduit.Core/Conduit.Core.csproj" />
+    <ProjectReference Include="../../Transforms/Conduit.Transforms/Conduit.Transforms.csproj" />
     <ProjectReference Include="../Conduit/Conduit.csproj" />
     <ProjectReference Include="../../Adapters/Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
     <ProjectReference Include="../../Adapters/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />

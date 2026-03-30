@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <!-- CA1707: Underscores in test names; CS1591: Missing XML docs on test methods -->
+    <NoWarn>$(NoWarn);CA1707;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="8.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Moq" Version="4.20.72" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Core/Conduit.Core/Conduit.Core.csproj" />
+    <ProjectReference Include="../../src/Transforms/Conduit.Transforms/Conduit.Transforms.csproj" />
+    <ProjectReference Include="../../src/Adapters/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
+    <ProjectReference Include="../../src/Adapters/Conduit.Sources.Zotero/Conduit.Sources.Zotero.csproj" />
+    <ProjectReference Include="../../src/App/Conduit/Conduit.csproj" />
+  </ItemGroup>
+
+</Project>

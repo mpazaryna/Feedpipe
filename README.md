@@ -1,11 +1,10 @@
 # Conduit
 
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://mpazaryna.github.io/Conduit/)
 [![CI](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml/badge.svg)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
-[![.NET 10](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download)
 [![Tests](https://img.shields.io/badge/tests-61%20passing-green)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
-[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://mpazaryna.github.io/Conduit/)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download)
 
 A domain-agnostic data pipeline that ingests, transforms, and serves data from multiple source types. Built with .NET 10.
 

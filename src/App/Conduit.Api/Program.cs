@@ -13,13 +13,9 @@
 // TEST WITH: curl http://localhost:5000/sources
 // -----------------------------------------------------------------------
 
-using Conduit.Core.Models;
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
-using Conduit.Sources.Rss.Services;
-using Conduit.Sources.Edi834.Services;
-using Conduit.Sources.Zotero.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -34,21 +30,10 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
 builder.Services.AddHttpClient();
 
-// Register adapters as keyed services
-builder.Services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
-    new FeedSourceAdapter(
-        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
-builder.Services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
-builder.Services.AddKeyedScoped<ISourceAdapter>("zotero", (sp, _) =>
-    new ZoteroSourceAdapter(
-        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<ZoteroSourceAdapter>>()));
-
-builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
-    new JsonOutputWriter(
-        builder.Configuration.GetSection("App")["OutputDir"] ?? "data",
-        sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
+var appSection = builder.Configuration.GetSection("App");
+builder.Services.AddConduitPipeline(
+    appSection["OutputDir"] ?? "data/raw",
+    appSection["CuratedOutputDir"] ?? "data/curated");
 
 var app = builder.Build();
 
@@ -78,30 +63,37 @@ app.MapGet("/sources/{name}/ingest", async (string name, IServiceProvider sp,
 })
 .WithName("IngestSource");
 
-// GET /sources/{name}/items -- Reads the most recently ingested items from disk.
+// GET /sources/{name}/items -- Reads the most recently transformed items from disk.
 app.MapGet("/sources/{name}/items", (string name,
     Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
-    var outputDir = settings.Value.OutputDir;
-    if (!Directory.Exists(outputDir))
-        return Results.Ok(Array.Empty<IPipelineRecord>());
+    var source = settings.Value.Sources.FirstOrDefault(s =>
+        string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 
-    var files = Directory.GetFiles(outputDir, $"{name}_*.json")
+    if (source is null)
+        return Results.NotFound(new { error = $"Source '{name}' not found" });
+
+    var transformedDir = Path.Combine(settings.Value.CuratedOutputDir, source.Type);
+    if (!Directory.Exists(transformedDir))
+        return Results.Ok(Array.Empty<object>());
+
+    var latestFile = Directory.GetFiles(transformedDir, $"{name}_*.json")
         .OrderByDescending(f => f)
         .FirstOrDefault();
 
-    if (files is null)
-        return Results.NotFound(new { error = $"No ingested data for '{name}'" });
+    if (latestFile is null)
+        return Results.NotFound(new { error = $"No transformed data for '{name}'" });
 
-    var json = File.ReadAllText(files);
-    var items = System.Text.Json.JsonSerializer.Deserialize<List<FeedItem>>(json);
+    var json = File.ReadAllText(latestFile);
+    var items = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
     return Results.Ok(items);
 })
 .WithName("GetSourceItems");
 
-// POST /sources/{name}/ingest -- Ingests a source and persists results to disk.
+// POST /sources/{name}/ingest -- Ingests a source, transforms, and persists results to disk.
 app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
-    IOutputWriter writer, Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
+    IOutputWriter writer, ITransformedOutputWriter transformedWriter,
+    Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
     var source = settings.Value.Sources.FirstOrDefault(s =>
         string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
@@ -114,6 +106,15 @@ app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
     if (items.Count > 0)
     {
         await writer.WriteAsync(items, source.Type, source.Name);
+
+        var enrichmentTransforms = sp.GetRequiredService<IReadOnlyList<ITransform>>();
+        var pipeline = TransformPipeline.CreateForSource(
+            transformedWriter, source.Type, enrichmentTransforms);
+        var transformed = await pipeline.ExecuteAsync(items);
+        if (transformed.Count > 0)
+        {
+            await transformedWriter.WriteAsync(transformed, source.Type, source.Name);
+        }
     }
 
     return Results.Ok(new { source = source.Name, itemCount = items.Count });

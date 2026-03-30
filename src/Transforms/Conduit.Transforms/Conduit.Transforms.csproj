@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../../Core/Conduit.Core/Conduit.Core.csproj" />
+    <ProjectReference Include="../../Adapters/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
+    <ProjectReference Include="../../Adapters/Conduit.Sources.Zotero/Conduit.Sources.Zotero.csproj" />
+  </ItemGroup>
+
+</Project>

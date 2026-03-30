@@ -30,12 +30,16 @@ namespace Conduit.Worker;
 /// </para>
 /// </remarks>
 /// <param name="serviceProvider">The DI service provider for resolving keyed adapters.</param>
-/// <param name="writer">The output writer, resolved from DI.</param>
+/// <param name="writer">The output writer for raw data, resolved from DI.</param>
+/// <param name="transformedWriter">The output writer for curated data.</param>
+/// <param name="enrichmentTransforms">Registered enrichment transforms.</param>
 /// <param name="settings">Typed configuration from appsettings.json.</param>
 /// <param name="logger">Typed logger for this worker.</param>
 public class Worker(
     IServiceProvider serviceProvider,
     IOutputWriter writer,
+    ITransformedOutputWriter transformedWriter,
+    IReadOnlyList<ITransform> enrichmentTransforms,
     IOptions<AppSettings> settings,
     ILogger<Worker> logger) : BackgroundService
 {
@@ -59,6 +63,14 @@ public class Worker(
                     if (items.Count > 0)
                     {
                         await writer.WriteAsync(items, source.Type, source.Name);
+
+                        var pipeline = TransformPipeline.CreateForSource(
+                            transformedWriter, source.Type, enrichmentTransforms);
+                        var transformed = await pipeline.ExecuteAsync(items);
+                        if (transformed.Count > 0)
+                        {
+                            await transformedWriter.WriteAsync(transformed, source.Type, source.Name);
+                        }
                     }
                 }
                 finally

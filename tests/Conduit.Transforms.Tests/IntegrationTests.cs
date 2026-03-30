@@ -1,0 +1,222 @@
+using System.Text.Json;
+using Conduit.Core.Models;
+using Conduit.Core.Services;
+using Conduit.Services;
+using Conduit.Sources.Edi834.Models;
+using Conduit.Transforms;
+using Microsoft.Extensions.Logging;
+using Moq;
+
+namespace Conduit.Transforms.Tests;
+
+public class IntegrationTests : IDisposable
+{
+    private readonly string _rawDir;
+    private readonly string _transformedDir;
+    private readonly TransformPipeline _pipeline;
+    private readonly JsonOutputWriter _rawWriter;
+    private readonly JsonTransformedOutputWriter _transformedWriter;
+
+    public IntegrationTests()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"conduit-integration-{Guid.NewGuid()}");
+        _rawDir = Path.Combine(baseDir, "raw");
+        _transformedDir = Path.Combine(baseDir, "transformed");
+        Directory.CreateDirectory(_rawDir);
+        Directory.CreateDirectory(_transformedDir);
+
+        _pipeline = new TransformPipeline(new List<ITransform>
+        {
+            new DeduplicationTransform(),
+            new RssEnrichmentTransform(),
+            new Edi834EnrichmentTransform(),
+            new ZoteroEnrichmentTransform()
+        });
+
+        _rawWriter = new JsonOutputWriter(_rawDir, Mock.Of<ILogger<JsonOutputWriter>>());
+        _transformedWriter = new JsonTransformedOutputWriter(_transformedDir,
+            Mock.Of<ILogger<JsonTransformedOutputWriter>>());
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        var baseDir = Path.GetDirectoryName(_rawDir)!;
+        if (Directory.Exists(baseDir))
+        {
+            Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task EndToEnd_Rss_Dedup_And_Enrich()
+    {
+        var items = new List<IPipelineRecord>
+        {
+            new FeedItem("AI Breakthrough in Neural Networks", "https://example.com/1",
+                "Researchers discover new neural network architecture", DateTime.UtcNow),
+            new FeedItem("AI Breakthrough Copy", "https://example.com/1",
+                "Same article from another feed", DateTime.UtcNow),
+            new FeedItem("Kubernetes Security Update", "https://example.com/2",
+                "Critical security patch for kubernetes clusters", DateTime.UtcNow)
+        };
+
+        // Raw write
+        await _rawWriter.WriteAsync(items, "rss", "test-feed");
+
+        // Transform
+        var transformed = await _pipeline.ExecuteAsync(items);
+
+        // Transformed write
+        await _transformedWriter.WriteAsync(transformed, "rss", "test-feed");
+
+        // Verify: dedup removed 1 of 3
+        Assert.Equal(2, transformed.Count);
+
+        // Verify: keywords enriched
+        Assert.All(transformed, t => Assert.True(t.Enrichment.ContainsKey("keywords")));
+
+        // Verify: raw has 3 items, transformed has 2
+        var rawFiles = Directory.GetFiles(Path.Combine(_rawDir, "rss"), "*.json");
+        var transformedFiles = Directory.GetFiles(Path.Combine(_transformedDir, "rss"), "*.json");
+        Assert.Single(rawFiles);
+        Assert.Single(transformedFiles);
+
+        var rawJson = await File.ReadAllTextAsync(rawFiles[0]);
+        var transformedJson = await File.ReadAllTextAsync(transformedFiles[0]);
+        using var rawDoc = JsonDocument.Parse(rawJson);
+        using var transformedDoc = JsonDocument.Parse(transformedJson);
+        Assert.Equal(3, rawDoc.RootElement.GetArrayLength());
+        Assert.Equal(2, transformedDoc.RootElement.GetArrayLength());
+    }
+
+    [Fact]
+    public async Task EndToEnd_Edi834_Dedup_And_Status_Enrichment()
+    {
+        var items = new List<IPipelineRecord>
+        {
+            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-A"),
+            new EnrollmentRecord("SUB001", "Doe, Jane Updated", "18", "024",
+                new DateTime(2026, 1, 1), new DateTime(2026, 3, 15), "PLAN-A"),
+            new EnrollmentRecord("SUB002", "Smith, Bob", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-B")
+        };
+
+        var transformed = await _pipeline.ExecuteAsync(items);
+        await _transformedWriter.WriteAsync(transformed, "edi834", "test-enrollment");
+
+        // Dedup: SUB001 + PLAN-A + 2026-01-01 appears twice, keeps first
+        Assert.Equal(2, transformed.Count);
+
+        // First record is active (021 addition)
+        Assert.Equal("active", transformed[0].Enrichment["enrollmentStatus"]);
+        Assert.Equal("self", transformed[0].Enrichment["relationship"]);
+
+        // Second record is SUB002
+        Assert.Equal("active", transformed[1].Enrichment["enrollmentStatus"]);
+    }
+
+    [Fact]
+    public async Task EndToEnd_Idempotent_On_Same_Input()
+    {
+        var items = new List<IPipelineRecord>
+        {
+            new FeedItem("Title A", "https://example.com/1", "Desc", DateTime.UtcNow),
+            new FeedItem("Title B", "https://example.com/2", "Desc", DateTime.UtcNow),
+            new FeedItem("Title A Dup", "https://example.com/1", "Desc", DateTime.UtcNow)
+        };
+
+        var run1 = await _pipeline.ExecuteAsync(items);
+        var run2 = await _pipeline.ExecuteAsync(items);
+
+        Assert.Equal(run1.Count, run2.Count);
+        Assert.Equal(
+            run1.Select(r => r.Record.Id).OrderBy(id => id),
+            run2.Select(r => r.Record.Id).OrderBy(id => id));
+    }
+
+    [Fact]
+    public async Task EndToEnd_Raw_Output_Preserved_Unchanged()
+    {
+        var items = new List<IPipelineRecord>
+        {
+            new FeedItem("Title", "https://example.com/1", "Desc", DateTime.UtcNow)
+        };
+
+        await _rawWriter.WriteAsync(items, "rss", "test");
+        var rawFiles = Directory.GetFiles(Path.Combine(_rawDir, "rss"), "*.json");
+        var rawContentBefore = await File.ReadAllTextAsync(rawFiles[0]);
+
+        // Transform and write to separate location
+        var transformed = await _pipeline.ExecuteAsync(items);
+        await _transformedWriter.WriteAsync(transformed, "rss", "test");
+
+        // Raw file unchanged
+        var rawContentAfter = await File.ReadAllTextAsync(rawFiles[0]);
+        Assert.Equal(rawContentBefore, rawContentAfter);
+
+        // Transformed in separate directory
+        Assert.True(Directory.Exists(Path.Combine(_transformedDir, "rss")));
+    }
+
+    [Fact]
+    public async Task EndToEnd_Cross_Run_Dedup_Filters_Previously_Stored()
+    {
+        var enrichmentStages = new List<ITransform>
+        {
+            new RssEnrichmentTransform()
+        };
+
+        // First run: ingest and store two articles
+        var firstBatch = new List<IPipelineRecord>
+        {
+            new FeedItem("Article 1", "https://example.com/1", "First article", DateTime.UtcNow),
+            new FeedItem("Article 2", "https://example.com/2", "Second article", DateTime.UtcNow)
+        };
+
+        var pipeline1 = TransformPipeline.CreateForSource(
+            _transformedWriter, "rss", enrichmentStages);
+        var transformed1 = await pipeline1.ExecuteAsync(firstBatch);
+        await _transformedWriter.WriteAsync(transformed1, "rss", "test-feed");
+        Assert.Equal(2, transformed1.Count);
+
+        // Second run: same two articles plus one new one
+        var secondBatch = new List<IPipelineRecord>
+        {
+            new FeedItem("Article 1 Again", "https://example.com/1", "Same article", DateTime.UtcNow),
+            new FeedItem("Article 2 Again", "https://example.com/2", "Same article", DateTime.UtcNow),
+            new FeedItem("Article 3 New", "https://example.com/3", "Brand new", DateTime.UtcNow)
+        };
+
+        var pipeline2 = TransformPipeline.CreateForSource(
+            _transformedWriter, "rss", enrichmentStages);
+        var transformed2 = await pipeline2.ExecuteAsync(secondBatch);
+
+        // Only the new article passes through
+        Assert.Single(transformed2);
+        Assert.Equal("https://example.com/3", transformed2[0].Record.Id);
+        Assert.True(transformed2[0].Enrichment.ContainsKey("keywords"));
+    }
+
+    [Fact]
+    public async Task Pipeline_Without_Enrichment_Stages_Still_Deduplicates()
+    {
+        var dedupOnly = new TransformPipeline(new List<ITransform>
+        {
+            new DeduplicationTransform()
+        });
+
+        var items = new List<IPipelineRecord>
+        {
+            new FeedItem("A", "https://example.com/1", "D", DateTime.UtcNow),
+            new FeedItem("B", "https://example.com/1", "D", DateTime.UtcNow),
+            new FeedItem("C", "https://example.com/2", "D", DateTime.UtcNow)
+        };
+
+        var result = await dedupOnly.ExecuteAsync(items);
+
+        Assert.Equal(2, result.Count);
+        Assert.All(result, r => Assert.Empty(r.Enrichment));
+    }
+}

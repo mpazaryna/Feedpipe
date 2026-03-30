@@ -7,12 +7,8 @@
 // STOP WITH: Ctrl+C (sends graceful shutdown signal)
 // -----------------------------------------------------------------------
 
-using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
-using Conduit.Sources.Rss.Services;
-using Conduit.Sources.Edi834.Services;
-using Conduit.Sources.Zotero.Services;
 using Conduit.Worker;
 using Serilog;
 
@@ -31,21 +27,10 @@ builder.Services.AddSerilog();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
 builder.Services.AddHttpClient();
 
-// Register adapters as keyed services
-builder.Services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
-    new FeedSourceAdapter(
-        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
-builder.Services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
-builder.Services.AddKeyedScoped<ISourceAdapter>("zotero", (sp, _) =>
-    new ZoteroSourceAdapter(
-        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
-        sp.GetRequiredService<ILogger<ZoteroSourceAdapter>>()));
-
-builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
-    new JsonOutputWriter(
-        builder.Configuration.GetSection("App")["OutputDir"] ?? "data",
-        sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
+var appSection = builder.Configuration.GetSection("App");
+builder.Services.AddConduitPipeline(
+    appSection["OutputDir"] ?? "data/raw",
+    appSection["CuratedOutputDir"] ?? "data/curated");
 
 builder.Services.AddHostedService<Worker>();
 

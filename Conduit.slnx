@@ -2,6 +2,9 @@
   <Folder Name="/src/Core/">
     <Project Path="src/Core/Conduit.Core/Conduit.Core.csproj" />
   </Folder>
+  <Folder Name="/src/Transforms/">
+    <Project Path="src/Transforms/Conduit.Transforms/Conduit.Transforms.csproj" />
+  </Folder>
   <Folder Name="/src/Adapters/">
     <Project Path="src/Adapters/Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
     <Project Path="src/Adapters/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
@@ -15,6 +18,9 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Conduit.Tests/Conduit.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Transforms/">
+    <Project Path="tests/Conduit.Transforms.Tests/Conduit.Transforms.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Adapters/">
     <Project Path="tests/Adapters/Conduit.Sources.Rss.Tests/Conduit.Sources.Rss.Tests.csproj" />
