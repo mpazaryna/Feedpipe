@@ -2,6 +2,7 @@
 
 **PRD:** [prd.md](./prd.md)
 **Status:** Complete
+**Ticket:** https://app.clickup.com/t/86e0mhar6
 
 ## Objective
 
