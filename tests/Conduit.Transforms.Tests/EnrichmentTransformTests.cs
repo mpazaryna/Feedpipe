@@ -45,7 +45,7 @@ public class RssEnrichmentTransformTests
     {
         var stage = new RssEnrichmentTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"));
 
         var result = await stage.ExecuteAsync(records);
@@ -97,7 +97,7 @@ public class Edi834EnrichmentTransformTests
     {
         var stage = new Edi834EnrichmentTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"));
 
         var result = await stage.ExecuteAsync(records);
@@ -110,7 +110,7 @@ public class Edi834EnrichmentTransformTests
     {
         var stage = new Edi834EnrichmentTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "024",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "024",
                 new DateTime(2026, 1, 1), new DateTime(2026, 3, 15), "PLAN-A"));
 
         var result = await stage.ExecuteAsync(records);
@@ -123,7 +123,7 @@ public class Edi834EnrichmentTransformTests
     {
         var stage = new Edi834EnrichmentTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2025, 1, 1), new DateTime(2025, 6, 30), "PLAN-A"));
 
         var result = await stage.ExecuteAsync(records);
@@ -149,11 +149,11 @@ public class Edi834EnrichmentTransformTests
     {
         var stage = new Edi834EnrichmentTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
-            new EnrollmentRecord("SUB001", "Doe, John", "01", "021",
+            new EnrollmentRecord("SUB002", "SUB001", false, "Doe, John", "01", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
-            new EnrollmentRecord("SUB001", "Doe, Jimmy", "19", "021",
+            new EnrollmentRecord("SUB003", "SUB001", false, "Doe, Jimmy", "19", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"));
 
         var result = await stage.ExecuteAsync(records);

@@ -5,8 +5,9 @@
 ## Success Criteria
 
 - [x] Multi-source ingestion beyond RSS (Atom, EDI 834, Zotero)
-- [ ] Data transformation and enrichment layer
-- [ ] Production readiness addressed continuously (see ADR-002)
+- [x] Data transformation and enrichment layer
+- [x] Validation and rejected data tier
+- [ ] Deep domain coverage across all three source types
 - [ ] Deployable as a container to Azure or any Linux host
 - [ ] Comprehensive test coverage and documentation
 
@@ -36,10 +37,34 @@ Introduces a pluggable source adapter pattern so the pipeline can ingest data fr
 
 ### Data Transformation
 
-Adds a composable transformation layer between ingestion and storage. Handles deduplication, content enrichment, validation, and pluggable storage backends. Turns Conduit from a data fetcher into a data pipeline.
+Adds a composable transformation layer between ingestion and storage. Handles deduplication, content enrichment, validation, and a three-tier output pattern (raw / curated / rejected). Turns Conduit from a data fetcher into a data pipeline.
 
 - PRD: [.orchestra/work/data-transformation/prd.md](.orchestra/work/data-transformation/prd.md)
 - Dependency: Multi-Source Ingestion
+- Status: Complete
+
+### Source Depth: EDI 834
+
+Deepens the 834 adapter from a working prototype to a more complete X12 implementation. Adds transaction/batch envelope tracking, functional acknowledgments (999/TA1), effective dating for overlapping coverage periods, and a more complete X12 loop parser for real-world 834 files.
+
+- PRD: [.orchestra/work/source-depth-edi834/prd.md](.orchestra/work/source-depth-edi834/prd.md)
+- Dependency: Data Transformation
+- Status: Not Started
+
+### Source Depth: Zotero
+
+Deepens the Zotero adapter beyond CSV parsing and domain tagging. Adds richer metadata resolution (CrossRef API for citation counts and venue), preprint-to-published version linking, collection and tag hierarchy, and reading status tracking.
+
+- PRD: [.orchestra/work/source-depth-zotero/prd.md](.orchestra/work/source-depth-zotero/prd.md)
+- Dependency: Data Transformation
+- Status: Not Started
+
+### Source Depth: RSS
+
+Deepens the RSS adapter beyond keyword extraction. Adds content-similarity deduplication across feeds, topic clustering, feed health tracking, and full-text extraction from linked articles.
+
+- PRD: [.orchestra/work/source-depth-rss/prd.md](.orchestra/work/source-depth-rss/prd.md)
+- Dependency: Data Transformation
 - Status: Not Started
 
 ### Storage Backends
@@ -55,4 +80,4 @@ Introduces persistent storage options beyond the local filesystem — database b
 - ADR-000: [The Score](adr/ADR-000-the-score.md)
 - ADR-001: [Domain-Agnostic Pipeline](adr/ADR-001-domain-agnostic-pipeline.md)
 - ADR-002: [Production Readiness is Continuous](adr/ADR-002-production-readiness-is-continuous.md)
-- ADR-003: [No External Documentation Site](adr/ADR-003-no-docs-site.md)
+- ADR-003: [Docusaurus Deploys .orchestra/ to GitHub Pages](adr/ADR-003-no-docs-site.md)

@@ -58,7 +58,7 @@ public class TransformedRecordTests
     {
         // Verify the envelope works with immutable positional record types
         var enrollment = new Conduit.Sources.Edi834.Models.EnrollmentRecord(
-            "SUB001", "Doe, Jane", "18", "021",
+            "SUB001", "SUB001", true, "Doe, Jane", "18", "021",
             new DateTime(2026, 1, 1), null, "PLAN-A");
 
         var transformed = new TransformedRecord<Conduit.Sources.Edi834.Models.EnrollmentRecord>(enrollment);

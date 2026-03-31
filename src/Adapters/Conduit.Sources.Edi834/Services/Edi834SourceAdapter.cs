@@ -77,7 +77,9 @@ public class Edi834SourceAdapter : ISourceAdapter
             .ToList();
 
         // Walk segments, grouping by INS (member loop boundary)
-        string? subscriberId = null;
+        string? memberId = null;
+        string? currentSubscriberId = null;  // tracks the active household subscriber across loops
+        bool isSubscriber = false;
         string? memberName = null;
         string? relationshipCode = null;
         string? maintenanceTypeCode = null;
@@ -94,10 +96,16 @@ public class Edi834SourceAdapter : ISourceAdapter
             if (segmentId == "INS")
             {
                 // Flush the previous member if we have one
-                if (inMemberLoop && subscriberId is not null && memberName is not null)
+                if (inMemberLoop && memberId is not null && memberName is not null)
                 {
+                    // Subscriber establishes the household context for subsequent dependents
+                    if (isSubscriber)
+                        currentSubscriberId = memberId;
+
                     records.Add(new EnrollmentRecord(
-                        SubscriberId: subscriberId,
+                        MemberId: memberId,
+                        SubscriberId: currentSubscriberId ?? memberId,
+                        IsSubscriber: isSubscriber,
                         MemberName: memberName,
                         RelationshipCode: relationshipCode ?? "",
                         MaintenanceTypeCode: maintenanceTypeCode ?? "",
@@ -108,8 +116,9 @@ public class Edi834SourceAdapter : ISourceAdapter
 
                 // Start a new member
                 inMemberLoop = true;
-                subscriberId = null;
+                memberId = null;
                 memberName = null;
+                isSubscriber = elements.Length > 1 && elements[1] == "Y";
                 relationshipCode = elements.Length > 2 ? elements[2] : null;
                 maintenanceTypeCode = elements.Length > 3 ? elements[3] : null;
                 coverageStartDate = DateTime.MinValue;
@@ -118,10 +127,10 @@ public class Edi834SourceAdapter : ISourceAdapter
             }
             else if (segmentId == "REF" && inMemberLoop)
             {
-                // REF*0F*{subscriberId} -- subscriber identifier
+                // REF*0F*{memberId} -- individual member identifier
                 if (elements.Length > 2 && elements[1] == "0F")
                 {
-                    subscriberId = elements[2];
+                    memberId = elements[2];
                 }
             }
             else if (segmentId == "DTP" && inMemberLoop)
@@ -165,10 +174,15 @@ public class Edi834SourceAdapter : ISourceAdapter
         }
 
         // Flush the last member
-        if (inMemberLoop && subscriberId is not null && memberName is not null)
+        if (inMemberLoop && memberId is not null && memberName is not null)
         {
+            if (isSubscriber)
+                currentSubscriberId = memberId;
+
             records.Add(new EnrollmentRecord(
-                SubscriberId: subscriberId,
+                MemberId: memberId,
+                SubscriberId: currentSubscriberId ?? memberId,
+                IsSubscriber: isSubscriber,
                 MemberName: memberName,
                 RelationshipCode: relationshipCode ?? "",
                 MaintenanceTypeCode: maintenanceTypeCode ?? "",

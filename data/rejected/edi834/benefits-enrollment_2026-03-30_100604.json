@@ -1,0 +1,41 @@
+[
+  {
+    "record": {
+      "subscriberId": "SUB999",
+      "memberName": "Invalid, Member",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "999",
+      "coverageStartDate": "2026-01-01T00:00:00",
+      "coverageEndDate": "2025-01-01T00:00:00",
+      "planId": "PLAN-X",
+      "dedupKey": "SUB999|2026-01-01|PLAN-X",
+      "id": "SUB999",
+      "timestamp": "2026-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "errors": [
+      "MaintenanceTypeCode \u0027999\u0027 is not a valid X12 code",
+      "CoverageEndDate is before CoverageStartDate"
+    ],
+    "rejectedAt": "2026-03-30T14:06:04.457293Z"
+  },
+  {
+    "record": {
+      "subscriberId": "SUB888",
+      "memberName": "",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2026-01-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN-Y",
+      "dedupKey": "SUB888|2026-01-01|PLAN-Y",
+      "id": "SUB888",
+      "timestamp": "2026-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "errors": [
+      "MemberName is required"
+    ],
+    "rejectedAt": "2026-03-30T14:06:04.457303Z"
+  }
+]

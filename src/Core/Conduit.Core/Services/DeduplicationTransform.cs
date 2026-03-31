@@ -47,6 +47,10 @@ public class DeduplicationTransform : ITransform
     public async Task<List<TransformedRecord<IPipelineRecord>>> ExecuteAsync(
         List<TransformedRecord<IPipelineRecord>> records)
     {
+        // If a writer was provided, seed `seen` with IDs already written to disk.
+        // This enables cross-run dedup: articles ingested on a previous run won't
+        // be written again on the next run.
+        // `is not null` is the idiomatic null check in modern C# (preferred over != null).
         var seen = _writer is not null && _sourceType is not null
             ? await _writer.ReadPreviousIdsAsync(_sourceType)
             : new HashSet<string>();
@@ -55,10 +59,15 @@ public class DeduplicationTransform : ITransform
 
         foreach (var record in records)
         {
+            // Pattern matching with `is` — checks the type AND binds to a variable in one step.
+            // If the record implements ICompositeDedupKey, `composite` is the typed reference.
+            // The ternary `?:` selects the composite key or falls back to the simple Id.
             var key = record.Record is ICompositeDedupKey composite
                 ? composite.DedupKey
                 : record.Record.Id;
 
+            // HashSet<T>.Add() returns true if the item was newly added, false if it already existed.
+            // This is the idiomatic C# way to "add and check in one step" — no separate Contains() call.
             if (seen.Add(key))
             {
                 result.Add(record);

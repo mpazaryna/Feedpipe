@@ -1,0 +1,60 @@
+[
+  {
+    "record": {
+      "subscriberId": "SUB003",
+      "memberName": "Bad, Record",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "999",
+      "coverageStartDate": "2026-01-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN-C",
+      "dedupKey": "SUB003|2026-01-01|PLAN-C",
+      "id": "SUB003",
+      "timestamp": "2026-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "errors": [
+      "MaintenanceTypeCode \u0027999\u0027 is not a valid X12 code (expected: 021, 024, 001, 025)"
+    ],
+    "rejectedAt": "2026-03-30T14:07:49.178302Z"
+  },
+  {
+    "record": {
+      "subscriberId": "",
+      "memberName": "",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2026-01-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN-D",
+      "dedupKey": "|2026-01-01|PLAN-D",
+      "id": "",
+      "timestamp": "2026-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "errors": [
+      "SubscriberId is required",
+      "MemberName is required"
+    ],
+    "rejectedAt": "2026-03-30T14:07:49.178305Z"
+  },
+  {
+    "record": {
+      "subscriberId": "SUB005",
+      "memberName": "Date, Problem",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2026-06-01T00:00:00",
+      "coverageEndDate": "2026-01-01T00:00:00",
+      "planId": "PLAN-E",
+      "dedupKey": "SUB005|2026-06-01|PLAN-E",
+      "id": "SUB005",
+      "timestamp": "2026-06-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "errors": [
+      "CoverageEndDate \u00272026-01-01\u0027 must be after CoverageStartDate \u00272026-06-01\u0027"
+    ],
+    "rejectedAt": "2026-03-30T14:07:49.178539Z"
+  }
+]

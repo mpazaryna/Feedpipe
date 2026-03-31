@@ -48,11 +48,17 @@ public class FeedSourceAdapter : ISourceAdapter
 
         try
         {
+            // `await` suspends this method until the HTTP response arrives,
+            // freeing the thread to do other work while the network call is in flight.
             var response = await _httpClient.GetStringAsync(location);
             var doc = XDocument.Parse(response);
 
+            // `?.` is the null-conditional operator — if `doc.Root` is null, the
+            // whole expression short-circuits to null instead of throwing NullReferenceException.
             var rootName = doc.Root?.Name.LocalName;
 
+            // Switch expression (C# 8+) — more concise than a switch statement.
+            // Each arm is `pattern => expression`; `_` is the discard / default arm.
             var items = rootName switch
             {
                 "rss" => ParseRss(doc),
@@ -66,7 +72,7 @@ public class FeedSourceAdapter : ISourceAdapter
         catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "Failed to fetch source: {Location}", location);
-            return [];
+            return []; // Collection expression (C# 12) — equivalent to new List<IPipelineRecord>()
         }
         catch (System.Xml.XmlException ex)
         {
@@ -77,6 +83,13 @@ public class FeedSourceAdapter : ISourceAdapter
 
     private static List<IPipelineRecord> ParseRss(XDocument doc)
     {
+        // `Descendants("item")` finds all <item> elements anywhere in the XML tree.
+        // `.Select()` maps each XML element to a FeedItem using named argument syntax.
+        // `?.Value ?? fallback` chains two null-handling operators:
+        //   `?.` — returns null if the element doesn't exist instead of throwing
+        //   `??` — substitutes the fallback value when the left side is null
+        // The cast `(IPipelineRecord)` is needed because Select infers List<FeedItem>
+        // but the return type declares List<IPipelineRecord>.
         return doc.Descendants("item")
             .Select(item => (IPipelineRecord)new FeedItem(
                 Title: item.Element("title")?.Value ?? "(no title)",
@@ -91,6 +104,10 @@ public class FeedSourceAdapter : ISourceAdapter
 
     private static List<IPipelineRecord> ParseAtom(XDocument doc)
     {
+        // Atom uses XML namespaces — element names must be qualified with the namespace.
+        // `AtomNs + "entry"` uses XNamespace's `+` operator overload to produce an
+        // XName like `{http://www.w3.org/2005/Atom}entry`. Without the namespace,
+        // `doc.Descendants("entry")` finds nothing because the names don't match.
         return doc.Descendants(AtomNs + "entry")
             .Select(entry => (IPipelineRecord)new FeedItem(
                 Title: entry.Element(AtomNs + "title")?.Value ?? "(no title)",

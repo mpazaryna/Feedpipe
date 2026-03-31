@@ -7,6 +7,22 @@ namespace Conduit.Core.Services;
 /// <see cref="TransformedRecord{T}"/> envelopes and passing them through
 /// each stage in order.
 /// </summary>
+/// <remarks>
+/// <para>
+/// <b>Sequential, not parallel.</b> Stages run one after the other (not concurrently)
+/// because the order is load-bearing: validation must run before dedup (no point
+/// deduplicating an invalid record), and dedup must run before enrichment (no point
+/// enriching a duplicate). <c>foreach</c> + <c>await</c> enforces this; using
+/// <c>Task.WhenAll</c> here would be a bug.
+/// </para>
+/// <para>
+/// <b>Static factory method.</b> <see cref="CreateForSource"/> is a static method on
+/// the class itself rather than a separate factory class. It lives here because it only
+/// assembles <see cref="TransformPipeline"/> from Core-level types (no Transforms
+/// assembly references). Compare with <c>PipelineFactory</c> in
+/// <c>Conduit.Transforms</c>, which can reference validator and enrichment types.
+/// </para>
+/// </remarks>
 public class TransformPipeline
 {
     private readonly List<ITransform> _stages;
@@ -29,10 +45,15 @@ public class TransformPipeline
     public async Task<List<TransformedRecord<IPipelineRecord>>> ExecuteAsync(
         List<IPipelineRecord> records)
     {
+        // LINQ projection: `.Select()` maps each raw record to a TransformedRecord envelope.
+        // `.ToList()` materializes the lazy sequence immediately — required because we need
+        // a concrete List<> to pass into the first stage, not a deferred IEnumerable<>.
         var transformed = records
             .Select(r => new TransformedRecord<IPipelineRecord>(r))
             .ToList();
 
+        // Each stage receives the output of the previous stage.
+        // `await` suspends this method until the stage completes before moving to the next.
         foreach (var stage in _stages)
         {
             transformed = await stage.ExecuteAsync(transformed);

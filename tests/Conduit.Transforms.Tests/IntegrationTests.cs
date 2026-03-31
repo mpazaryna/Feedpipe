@@ -5,7 +5,9 @@ using Conduit.Services;
 using Conduit.Sources.Edi834.Models;
 using Conduit.Transforms;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using Xunit.Abstractions;
 
 namespace Conduit.Transforms.Tests;
 
@@ -16,9 +18,11 @@ public class IntegrationTests : IDisposable
     private readonly TransformPipeline _pipeline;
     private readonly JsonOutputWriter _rawWriter;
     private readonly JsonTransformedOutputWriter _transformedWriter;
+    private readonly ITestOutputHelper _testOutput;
 
-    public IntegrationTests()
+    public IntegrationTests(ITestOutputHelper testOutput)
     {
+        _testOutput = testOutput;
         var baseDir = Path.Combine(Path.GetTempPath(), $"conduit-integration-{Guid.NewGuid()}");
         _rawDir = Path.Combine(baseDir, "raw");
         _transformedDir = Path.Combine(baseDir, "transformed");
@@ -95,11 +99,11 @@ public class IntegrationTests : IDisposable
     {
         var items = new List<IPipelineRecord>
         {
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
-            new EnrollmentRecord("SUB001", "Doe, Jane Updated", "18", "024",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane Updated", "18", "024",
                 new DateTime(2026, 1, 1), new DateTime(2026, 3, 15), "PLAN-A"),
-            new EnrollmentRecord("SUB002", "Smith, Bob", "18", "021",
+            new EnrollmentRecord("SUB002", "SUB002", true, "Smith, Bob", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-B")
         };
 
@@ -197,6 +201,121 @@ public class IntegrationTests : IDisposable
         Assert.Single(transformed2);
         Assert.Equal("https://example.com/3", transformed2[0].Record.Id);
         Assert.True(transformed2[0].Enrichment.ContainsKey("keywords"));
+    }
+
+    [Fact]
+    public async Task EndToEnd_ValidationTransform_Splits_Valid_And_Invalid_To_Real_Dirs()
+    {
+        // Runs the full pipeline (validation → dedup → enrichment) against real output dirs.
+        // Run: dotnet test --filter EndToEnd_ValidationTransform_Splits_Valid_And_Invalid_To_Real_Dirs
+        // Then inspect: data/curated/edi834/ and data/rejected/edi834/
+        var baseDir = Path.Combine(
+            Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "data");
+
+        var curatedDir = Path.Combine(baseDir, "curated");
+        var rejectedDir = Path.Combine(baseDir, "rejected");
+
+        var curatedWriter = new JsonTransformedOutputWriter(curatedDir,
+            NullLogger<JsonTransformedOutputWriter>.Instance);
+        var rejectedWriter = new JsonRejectedOutputWriter(rejectedDir,
+            NullLogger<JsonRejectedOutputWriter>.Instance);
+
+        var validators = new List<IRecordValidator>
+        {
+            new EnrollmentRecordValidator()
+        };
+
+        var pipeline = PipelineFactory.CreateForSource(
+            curatedWriter, rejectedWriter,
+            "edi834", "benefits-enrollment",
+            validators,
+            [new Edi834EnrichmentTransform()]);
+
+        var records = new List<IPipelineRecord>
+        {
+            // Valid: addition with correct codes
+            new EnrollmentRecord("SUB001", "SUB001", true, "Smith, Alice", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-A"),
+
+            // Valid: termination with end date after start date
+            new EnrollmentRecord("SUB002", "SUB001", false, "Jones, Bob", "01", "024",
+                new DateTime(2026, 1, 1), new DateTime(2026, 12, 31), "PLAN-B"),
+
+            // Invalid: unknown maintenance code
+            new EnrollmentRecord("SUB003", "SUB003", true, "Bad, Record", "18", "999",
+                new DateTime(2026, 1, 1), null, "PLAN-C"),
+
+            // Invalid: missing member ID and member name
+            new EnrollmentRecord("", "", true, "", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-D"),
+
+            // Invalid: end date before start date
+            new EnrollmentRecord("SUB005", "SUB005", true, "Date, Problem", "18", "021",
+                new DateTime(2026, 6, 1), new DateTime(2026, 1, 1), "PLAN-E"),
+        };
+
+        var transformed = await pipeline.ExecuteAsync(records);
+
+        // Write curated output for valid records
+        if (transformed.Count > 0)
+            await curatedWriter.WriteAsync(transformed, "edi834", "benefits-enrollment");
+
+        // 2 valid, 3 invalid
+        Assert.Equal(2, transformed.Count);
+
+        var curatedFiles = Directory.GetFiles(Path.Combine(curatedDir, "edi834"), "*.json");
+        var rejectedFiles = Directory.GetFiles(Path.Combine(rejectedDir, "edi834"), "*.json");
+
+        Assert.NotEmpty(curatedFiles);
+        Assert.NotEmpty(rejectedFiles);
+
+        // Find most recent rejected file (not arbitrary filesystem order)
+        var mostRecentRejected = rejectedFiles
+            .Select(f => new FileInfo(f))
+            .OrderByDescending(fi => fi.LastWriteTime)
+            .First();
+        var rejectedJson = await File.ReadAllTextAsync(mostRecentRejected.FullName);
+        using var doc = JsonDocument.Parse(rejectedJson);
+        Assert.Equal(3, doc.RootElement.GetArrayLength());
+    }
+
+    [Fact]
+    public async Task EndToEnd_RejectedWriter_Writes_To_Data_Rejected()
+    {
+        // Writes to the real data/rejected/ directory so you can inspect the output.
+        // Run: dotnet test --filter EndToEnd_RejectedWriter_Writes_To_Data_Rejected
+        // Then open: data/rejected/edi834/
+        var rejectedDir = Path.Combine(
+            Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "data", "rejected");
+
+        var writer = new JsonRejectedOutputWriter(rejectedDir, NullLogger<JsonRejectedOutputWriter>.Instance);
+
+        var records = new List<RejectedRecord<IPipelineRecord>>
+        {
+            new(new EnrollmentRecord("SUB999", "SUB999", true, "Invalid, Member", "18", "999",
+                    new DateTime(2026, 1, 1), new DateTime(2025, 1, 1), "PLAN-X"),
+                ["MaintenanceTypeCode '999' is not a valid X12 code",
+                 "CoverageEndDate is before CoverageStartDate"]),
+
+            new(new EnrollmentRecord("SUB888", "SUB888", true, "", "18", "021",
+                    new DateTime(2026, 1, 1), null, "PLAN-Y"),
+                ["MemberName is required"])
+        };
+
+        await writer.WriteAsync(records, "edi834", "benefits-enrollment");
+
+        // Find the file we just wrote (most recent by timestamp, not arbitrary order)
+        var files = Directory.GetFiles(Path.Combine(rejectedDir, "edi834"), "*.json");
+        var mostRecent = files
+            .Select(f => new FileInfo(f))
+            .OrderByDescending(fi => fi.LastWriteTime)
+            .First();
+        
+        _testOutput.WriteLine($"Checking most recent file: {mostRecent.FullName}");
+        
+        var json = await File.ReadAllTextAsync(mostRecent.FullName);
+        using var doc = JsonDocument.Parse(json);
+        Assert.Equal(2, doc.RootElement.GetArrayLength());
     }
 
     [Fact]

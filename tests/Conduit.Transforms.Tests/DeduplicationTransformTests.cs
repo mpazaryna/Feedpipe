@@ -107,9 +107,9 @@ public class DeduplicationTransformTests
         // Same subscriber but different plan = two distinct records
         var stage = new DeduplicationTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-B")
         );
 
@@ -124,9 +124,9 @@ public class DeduplicationTransformTests
         // Same subscriber + plan + start date = duplicate
         var stage = new DeduplicationTransform();
         var records = WrapRecords(
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
-            new EnrollmentRecord("SUB001", "Doe, Jane Updated", "18", "024",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane Updated", "18", "024",
                 new DateTime(2026, 1, 1), new DateTime(2026, 3, 15), "PLAN-A")
         );
 

@@ -12,7 +12,15 @@ namespace Conduit.Sources.Edi834.Models;
 /// termination, or change -- along with identifying and coverage details.
 /// </para>
 /// </remarks>
-/// <param name="SubscriberId">The subscriber identifier from the REF*0F segment (typically SSN).</param>
+/// <param name="MemberId">The individual member's identifier from the REF*0F segment.</param>
+/// <param name="SubscriberId">
+/// The household subscriber's identifier (the INS01=Y member's REF*0F).
+/// For subscribers, this equals <see cref="MemberId"/>. For dependents, this is the
+/// primary subscriber's ID, enabling household grouping.
+/// </param>
+/// <param name="IsSubscriber">
+/// True when INS01 is "Y" (this member is the subscriber); false for dependents (INS01 = "N").
+/// </param>
 /// <param name="MemberName">Full name from the NM1 segment (Last, First format).</param>
 /// <param name="RelationshipCode">
 /// INS02 code indicating the member's relationship to the subscriber.
@@ -25,7 +33,9 @@ namespace Conduit.Sources.Edi834.Models;
 /// <param name="CoverageEndDate">End of coverage from DTP*349 segment, if present.</param>
 /// <param name="PlanId">Health plan identifier from the HD segment.</param>
 public record EnrollmentRecord(
+    string MemberId,
     string SubscriberId,
+    bool IsSubscriber,
     string MemberName,
     string RelationshipCode,
     string MaintenanceTypeCode,
@@ -35,10 +45,10 @@ public record EnrollmentRecord(
 ) : IPipelineRecord, ICompositeDedupKey
 {
     /// <inheritdoc />
-    public string DedupKey => $"{SubscriberId}|{CoverageStartDate:yyyy-MM-dd}|{PlanId}";
+    public string DedupKey => $"{SubscriberId}|{MemberId}|{CoverageStartDate:yyyy-MM-dd}|{PlanId}";
 
     /// <inheritdoc />
-    public string Id => SubscriberId;
+    public string Id => MemberId;
 
     /// <inheritdoc />
     public DateTime Timestamp => CoverageStartDate;

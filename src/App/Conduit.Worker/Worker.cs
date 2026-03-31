@@ -1,5 +1,6 @@
 using Conduit.Core.Services;
 using Conduit.Models;
+using Conduit.Transforms;
 using Microsoft.Extensions.Options;
 
 namespace Conduit.Worker;
@@ -32,14 +33,18 @@ namespace Conduit.Worker;
 /// <param name="serviceProvider">The DI service provider for resolving keyed adapters.</param>
 /// <param name="writer">The output writer for raw data, resolved from DI.</param>
 /// <param name="transformedWriter">The output writer for curated data.</param>
+/// <param name="rejectedWriter">The output writer for rejected (invalid) records.</param>
 /// <param name="enrichmentTransforms">Registered enrichment transforms.</param>
+/// <param name="validators">Registered record validators.</param>
 /// <param name="settings">Typed configuration from appsettings.json.</param>
 /// <param name="logger">Typed logger for this worker.</param>
 public class Worker(
     IServiceProvider serviceProvider,
     IOutputWriter writer,
     ITransformedOutputWriter transformedWriter,
+    IRejectedOutputWriter rejectedWriter,
     IReadOnlyList<ITransform> enrichmentTransforms,
+    IReadOnlyList<IRecordValidator> validators,
     IOptions<AppSettings> settings,
     ILogger<Worker> logger) : BackgroundService
 {
@@ -75,8 +80,8 @@ public class Worker(
                             await writer.WriteAsync(items, source.Type, source.Name);
                         }
 
-                        var pipeline = TransformPipeline.CreateForSource(
-                            transformedWriter, source.Type, enrichmentTransforms);
+                        var pipeline = PipelineFactory.CreateForSource(
+                            transformedWriter, rejectedWriter, source.Type, source.Name, validators, enrichmentTransforms);
                         var transformed = await pipeline.ExecuteAsync(items);
                         if (transformed.Count > 0)
                         {

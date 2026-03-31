@@ -45,7 +45,9 @@ public class Edi834SourceAdapterTests
         var items = await adapter.IngestAsync(path);
         var record = Assert.IsType<EnrollmentRecord>(items[0]);
 
+        Assert.Equal("123456789", record.MemberId);
         Assert.Equal("123456789", record.SubscriberId);
+        Assert.True(record.IsSubscriber);
         Assert.Equal("DOE, JOHN", record.MemberName);
         Assert.Equal("18", record.RelationshipCode);
         Assert.Equal("021", record.MaintenanceTypeCode);
@@ -63,7 +65,9 @@ public class Edi834SourceAdapterTests
         var items = await adapter.IngestAsync(path);
         var record = Assert.IsType<EnrollmentRecord>(items[1]);
 
-        Assert.Equal("123456790", record.SubscriberId);
+        Assert.Equal("123456790", record.MemberId);
+        Assert.Equal("123456789", record.SubscriberId);  // household subscriber is John Doe
+        Assert.False(record.IsSubscriber);
         Assert.Equal("DOE, JANE", record.MemberName);
         Assert.Equal("01", record.RelationshipCode);
         Assert.Equal("021", record.MaintenanceTypeCode);
@@ -78,7 +82,9 @@ public class Edi834SourceAdapterTests
         var items = await adapter.IngestAsync(path);
         var record = Assert.IsType<EnrollmentRecord>(items[2]);
 
+        Assert.Equal("987654321", record.MemberId);
         Assert.Equal("987654321", record.SubscriberId);
+        Assert.True(record.IsSubscriber);
         Assert.Equal("SMITH, BOB", record.MemberName);
         Assert.Equal("024", record.MaintenanceTypeCode);
         Assert.Equal(new DateTime(2023, 6, 1), record.CoverageStartDate);
@@ -95,7 +101,9 @@ public class Edi834SourceAdapterTests
         var items = await adapter.IngestAsync(path);
         var record = Assert.IsType<EnrollmentRecord>(items[3]);
 
-        Assert.Equal("987654322", record.SubscriberId);
+        Assert.Equal("987654322", record.MemberId);
+        Assert.Equal("987654321", record.SubscriberId);  // household subscriber is Bob Smith
+        Assert.False(record.IsSubscriber);
         Assert.Equal("SMITH, ALICE", record.MemberName);
         Assert.Equal("19", record.RelationshipCode);
     }
@@ -109,7 +117,7 @@ public class Edi834SourceAdapterTests
         var items = await adapter.IngestAsync(path);
         var record = items[0];
 
-        Assert.Equal("123456789", record.Id);
+        Assert.Equal("123456789", record.Id);  // Id => MemberId
         Assert.Equal(new DateTime(2024, 1, 1), record.Timestamp);
         Assert.Equal("edi834", record.SourceType);
     }
@@ -183,7 +191,9 @@ public class Edi834SourceAdapterTests
 
         Assert.Single(records);
         var enrollment = Assert.IsType<EnrollmentRecord>(records[0]);
+        Assert.Equal("111222333", enrollment.MemberId);
         Assert.Equal("111222333", enrollment.SubscriberId);
+        Assert.True(enrollment.IsSubscriber);
         Assert.Equal("JONES, PAT", enrollment.MemberName);
         Assert.Equal("PLANX", enrollment.PlanId);
         Assert.Equal(new DateTime(2024, 3, 1), enrollment.CoverageStartDate);
