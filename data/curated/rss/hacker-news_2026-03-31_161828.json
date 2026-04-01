@@ -1,0 +1,502 @@
+[
+  {
+    "record": {
+      "title": "Show HN: Cerno \u2013 CAPTCHA that targets LLM reasoning, not human biology",
+      "link": "https://cerno.sh",
+      "description": "Article URL: https://cerno.sh\nComments URL: https://news.ycombinator.com/item?id=47592183\nPoints: 6\n# Comments: 3",
+      "publishedDate": "2026-03-31T15:22:58-04:00",
+      "id": "https://cerno.sh",
+      "timestamp": "2026-03-31T15:22:58-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "cerno",
+        "url",
+        "https",
+        "comments",
+        "show",
+        "captcha",
+        "targets",
+        "llm",
+        "reasoning",
+        "human"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "GitHub\u0027s Historic Uptime",
+      "link": "https://damrnelson.github.io/github-historical-uptime/",
+      "description": "Article URL: https://damrnelson.github.io/github-historical-uptime/\nComments URL: https://news.ycombinator.com/item?id=47591928\nPoints: 152\n# Comments: 39",
+      "publishedDate": "2026-03-31T15:01:29-04:00",
+      "id": "https://damrnelson.github.io/github-historical-uptime/",
+      "timestamp": "2026-03-31T15:01:29-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "github",
+        "url",
+        "https",
+        "comments",
+        "historic",
+        "uptime",
+        "article",
+        "damrnelson",
+        "github-historical-uptime",
+        "news"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "OkCupid gave 3M dating-app photos to facial recognition firm, FTC says",
+      "link": "https://arstechnica.com/tech-policy/2026/03/okcupid-match-pay-no-fine-for-sharing-user-photos-with-facial-recognition-firm/",
+      "description": "Article URL: https://arstechnica.com/tech-policy/2026/03/okcupid-match-pay-no-fine-for-sharing-user-photos-with-facial-recognition-firm/\nComments URL: https://news.ycombinator.com/item?id=47591104\nPoints: 114\n# Comments: 28",
+      "publishedDate": "2026-03-31T13:55:04-04:00",
+      "id": "https://arstechnica.com/tech-policy/2026/03/okcupid-match-pay-no-fine-for-sharing-user-photos-with-facial-recognition-firm/",
+      "timestamp": "2026-03-31T13:55:04-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "com",
+        "comments",
+        "okcupid",
+        "gave",
+        "dating-app",
+        "photos",
+        "facial",
+        "recognition"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Show HN: How This Graybeard Built the Fastest and Freest Postgres BM25 Search",
+      "link": "https://github.com/timescale/pg_textsearch",
+      "description": "Last summer we faced a conundrum at my company, Tiger Data, a Postgres cloud vendor whose main business is in timeseries data.  We were trying to grow our business towards emerging AI-centric workloads and wanted to provide a state-of-the-art hybrid search stack in Postgres.  We\u0027d already built pgvectorscale in house with the goal of scaling semantic search beyond pgvector\u0027s main memory limitations.  We just needed a scalable ranked keyword search solution too.The problem: core Postgres doesn\u0027t provide this; the leading Postgres BM25 extension, ParadeDB, is guarded behind AGPL; developing our own extension appeared daunting.  We\u0027d need a small team of sharp engineers and 6-12 months, I figured.  And we\u0027d probably still fall short of the performance of a mature system like Parade/Tantivy.Or would we?  I\u0027d be experimenting long enough with AI-boosted development at that point to realize that with the latest tools (Claude Code \u002B Opus) and an experienced hand (I\u0027ve been working in database systems internals for 25 years now), the old time estimates pretty much go out the window.I told our CTO I thought I could solo the project in one quarter.  This raised some eyebrows.It did take a little more time than that (two quarters), and we got some real help from the community (amazing!) after open-sourcing the pre-release.  But I\u0027m thrilled/exhausted today to share that pg_textsearch v1.0 is freely available via open source (Postgres license), on Tiger Data cloud, and hopefully soon, a hyperscalar near you:https://github.com/timescale/pg_textsearchIn the blog post accompanying the release, I overview the architecture and present benchmark results using MS-MARCO.  To my surprise, we were not only able to meet Parade/Tantivy\u0027s query performance, but exceed it substantially, measuring a 4.7x advantage on query throughput at scale:https://www.tigerdata.com/blog/pg-textsearch-bm25-full-text-...It\u0027s exciting (and, to be honest, a little unnerving) to see a field I\u0027ve spent so much time toiling in change so quickly in ways that enable us to be more ambitious in our technical objectives.  Technical moats are moats no longer.The benchmark scripts and methodology are available in the github repo.  Happy to answer any questions in the thread.Thanks,TJ (tj@tigerdata.com)\n\nComments URL: https://news.ycombinator.com/item?id=47589856\nPoints: 28\n# Comments: 3",
+      "publishedDate": "2026-03-31T12:29:52-04:00",
+      "id": "https://github.com/timescale/pg_textsearch",
+      "timestamp": "2026-03-31T12:29:52-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "postgres",
+        "search",
+        "our",
+        "com",
+        "data",
+        "time",
+        "https",
+        "built",
+        "bm25",
+        "tiger"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Cohere Transcribe: Speech Recognition",
+      "link": "https://cohere.com/blog/transcribe",
+      "description": "Article URL: https://cohere.com/blog/transcribe\nComments URL: https://news.ycombinator.com/item?id=47589818\nPoints: 108\n# Comments: 40",
+      "publishedDate": "2026-03-31T12:27:02-04:00",
+      "id": "https://cohere.com/blog/transcribe",
+      "timestamp": "2026-03-31T12:27:02-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "cohere",
+        "transcribe",
+        "url",
+        "https",
+        "com",
+        "comments",
+        "speech",
+        "recognition",
+        "article",
+        "blog"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Show HN: PhAIL \u2013 Real-robot benchmark for AI models",
+      "link": "https://phail.ai",
+      "description": "I built this because I couldn\u0027t find honest numbers on how well VLA models [1] actually work on commercial tasks. I come from search ranking at Google where you measure everything, and in robotics nobody seemed to know.PhAIL runs four models (OpenPI/pi0.5, GR00T, ACT, SmolVLA) on bin-to-bin order picking \u2013 one of the most common warehouse operations. Same robot (Franka FR3), same objects, hundreds of blind runs. The operator doesn\u0027t know which model is running.Best model: 64 UPH. Human teleoperating the same robot: 330. Human by hand: 1,300\u002B.Everything is public \u2013 every run with synced video and telemetry, the fine-tuning dataset, training scripts. The leaderboard is open for submissions.Happy to answer questions about methodology, the models, or what we observed.[1] Vision-Language-Action: https://en.wikipedia.org/wiki/Vision-language-action_model\n\nComments URL: https://news.ycombinator.com/item?id=47589797\nPoints: 12\n# Comments: 8",
+      "publishedDate": "2026-03-31T12:25:43-04:00",
+      "id": "https://phail.ai",
+      "timestamp": "2026-03-31T12:25:43-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "models",
+        "model",
+        "phail",
+        "everything",
+        "know",
+        "runs",
+        "robot",
+        "human",
+        "vision-language-action",
+        "https"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Forth VM and compiler written in C\u002B\u002B and Scryer Prolog",
+      "link": "https://github.com/no382001/forth-vm",
+      "description": "Article URL: https://github.com/no382001/forth-vm\nComments URL: https://news.ycombinator.com/item?id=47589732\nPoints: 13\n# Comments: 0",
+      "publishedDate": "2026-03-31T12:21:20-04:00",
+      "id": "https://github.com/no382001/forth-vm",
+      "timestamp": "2026-03-31T12:21:20-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "com",
+        "comments",
+        "forth",
+        "compiler",
+        "written",
+        "scryer",
+        "prolog",
+        "article"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Scotty: A beautiful SSH task runner",
+      "link": "https://freek.dev/3064-scotty-a-beautiful-ssh-task-runner",
+      "description": "Article URL: https://freek.dev/3064-scotty-a-beautiful-ssh-task-runner\nComments URL: https://news.ycombinator.com/item?id=47589567\nPoints: 27\n# Comments: 13",
+      "publishedDate": "2026-03-31T12:12:29-04:00",
+      "id": "https://freek.dev/3064-scotty-a-beautiful-ssh-task-runner",
+      "timestamp": "2026-03-31T12:12:29-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "comments",
+        "scotty",
+        "beautiful",
+        "ssh",
+        "task",
+        "runner",
+        "article",
+        "freek"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Securing Elliptic Curve Cryptocurrencies Against Quantum Vulnerabilities [pdf]",
+      "link": "https://quantumai.google/static/site-assets/downloads/cryptocurrency-whitepaper.pdf",
+      "description": "Article URL: https://quantumai.google/static/site-assets/downloads/cryptocurrency-whitepaper.pdf\nComments URL: https://news.ycombinator.com/item?id=47589370\nPoints: 32\n# Comments: 16",
+      "publishedDate": "2026-03-31T12:00:29-04:00",
+      "id": "https://quantumai.google/static/site-assets/downloads/cryptocurrency-whitepaper.pdf",
+      "timestamp": "2026-03-31T12:00:29-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "pdf",
+        "url",
+        "https",
+        "comments",
+        "securing",
+        "elliptic",
+        "curve",
+        "cryptocurrencies",
+        "against",
+        "quantum"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "GitHub Monaspace Case Study",
+      "link": "https://lettermatic.com/custom/monaspace-case-study",
+      "description": "Article URL: https://lettermatic.com/custom/monaspace-case-study\nComments URL: https://news.ycombinator.com/item?id=47588349\nPoints: 86\n# Comments: 24",
+      "publishedDate": "2026-03-31T11:01:35-04:00",
+      "id": "https://lettermatic.com/custom/monaspace-case-study",
+      "timestamp": "2026-03-31T11:01:35-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "com",
+        "comments",
+        "github",
+        "monaspace",
+        "case",
+        "study",
+        "article",
+        "lettermatic"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Slop is not necessarily the future",
+      "link": "https://www.greptile.com/blog/ai-slopware-future",
+      "description": "Article URL: https://www.greptile.com/blog/ai-slopware-future\nComments URL: https://news.ycombinator.com/item?id=47587953\nPoints: 90\n# Comments: 156",
+      "publishedDate": "2026-03-31T10:32:26-04:00",
+      "id": "https://www.greptile.com/blog/ai-slopware-future",
+      "timestamp": "2026-03-31T10:32:26-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "com",
+        "comments",
+        "slop",
+        "necessarily",
+        "future",
+        "article",
+        "www",
+        "greptile"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Oracle slashes 30k jobs",
+      "link": "https://rollingout.com/2026/03/31/oracle-slashes-30000-jobs-with-a-cold-6/",
+      "description": "Article URL: https://rollingout.com/2026/03/31/oracle-slashes-30000-jobs-with-a-cold-6/\nComments URL: https://news.ycombinator.com/item?id=47587935\nPoints: 742\n# Comments: 628",
+      "publishedDate": "2026-03-31T10:30:48-04:00",
+      "id": "https://rollingout.com/2026/03/31/oracle-slashes-30000-jobs-with-a-cold-6/",
+      "timestamp": "2026-03-31T10:30:48-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "com",
+        "comments",
+        "oracle",
+        "slashes",
+        "jobs",
+        "article",
+        "rollingout",
+        "oracle-slashes-30000-jobs-with-a-cold-6"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Microsoft: Copilot is for entertainment purposes only",
+      "link": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals/termsofuse",
+      "description": "Article URL: https://www.microsoft.com/en-us/microsoft-copilot/for-individuals/termsofuse\nComments URL: https://news.ycombinator.com/item?id=47587866\nPoints: 320\n# Comments: 133",
+      "publishedDate": "2026-03-31T10:25:37-04:00",
+      "id": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals/termsofuse",
+      "timestamp": "2026-03-31T10:25:37-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "microsoft",
+        "url",
+        "https",
+        "com",
+        "comments",
+        "copilot",
+        "entertainment",
+        "purposes",
+        "article",
+        "www"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "RubyGems Fracture Incident Report",
+      "link": "https://rubycentral.org/news/rubygems-fracture-incident-report/",
+      "description": "Article URL: https://rubycentral.org/news/rubygems-fracture-incident-report/\nComments URL: https://news.ycombinator.com/item?id=47587631\nPoints: 74\n# Comments: 29",
+      "publishedDate": "2026-03-31T10:08:37-04:00",
+      "id": "https://rubycentral.org/news/rubygems-fracture-incident-report/",
+      "timestamp": "2026-03-31T10:08:37-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "news",
+        "comments",
+        "rubygems",
+        "fracture",
+        "incident",
+        "report",
+        "article",
+        "rubycentral"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Ask HN: Distributed data centers in our basements",
+      "link": "https://news.ycombinator.com/item?id=47587597",
+      "description": "This is likely a bit unrealistic, but why can\u0027t we make a half rack server to go in someones basement that can also heat up their hot water and use the basement floor as a heat sink as well?It seems like a lot of the blight of data centers is the energy to remove the heat.  By distributing them into cool basements and even connecting them into the home heating system we could reduce that making them more efficient.\n\nComments URL: https://news.ycombinator.com/item?id=47587597\nPoints: 26\n# Comments: 45",
+      "publishedDate": "2026-03-31T10:05:42-04:00",
+      "id": "https://news.ycombinator.com/item?id=47587597",
+      "timestamp": "2026-03-31T10:05:42-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "heat",
+        "them",
+        "data",
+        "centers",
+        "basements",
+        "basement",
+        "comments",
+        "ask",
+        "distributed",
+        "our"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "The Claude Code Source Leak: fake tools, frustration regexes, undercover mode",
+      "link": "https://alex000kim.com/posts/2026-03-31-claude-code-source-leak/",
+      "description": "Article URL: https://alex000kim.com/posts/2026-03-31-claude-code-source-leak/\nComments URL: https://news.ycombinator.com/item?id=47586778\nPoints: 254\n# Comments: 111",
+      "publishedDate": "2026-03-31T09:04:30-04:00",
+      "id": "https://alex000kim.com/posts/2026-03-31-claude-code-source-leak/",
+      "timestamp": "2026-03-31T09:04:30-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "url",
+        "https",
+        "com",
+        "comments",
+        "claude",
+        "code",
+        "source",
+        "leak",
+        "fake",
+        "tools"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Open source CAD in the browser (Solvespace)",
+      "link": "https://solvespace.com/webver.pl",
+      "description": "Article URL: https://solvespace.com/webver.pl\nComments URL: https://news.ycombinator.com/item?id=47586614\nPoints: 227\n# Comments: 70",
+      "publishedDate": "2026-03-31T08:50:23-04:00",
+      "id": "https://solvespace.com/webver.pl",
+      "timestamp": "2026-03-31T08:50:23-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "solvespace",
+        "url",
+        "https",
+        "com",
+        "comments",
+        "open",
+        "source",
+        "cad",
+        "browser",
+        "article"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Claude Code users hitting usage limits \u0027way faster than expected\u0027",
+      "link": "https://www.theregister.com/2026/03/31/anthropic_claude_code_limits/",
+      "description": "Article URL: https://www.theregister.com/2026/03/31/anthropic_claude_code_limits/\nComments URL: https://news.ycombinator.com/item?id=47586176\nPoints: 222\n# Comments: 140",
+      "publishedDate": "2026-03-31T08:11:29-04:00",
+      "id": "https://www.theregister.com/2026/03/31/anthropic_claude_code_limits/",
+      "timestamp": "2026-03-31T08:11:29-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "claude",
+        "code",
+        "limits",
+        "url",
+        "https",
+        "com",
+        "comments",
+        "users",
+        "hitting",
+        "usage"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Combinators",
+      "link": "https://tinyapl.rubenverg.com/docs/info/combinators",
+      "description": "Article URL: https://tinyapl.rubenverg.com/docs/info/combinators\nComments URL: https://news.ycombinator.com/item?id=47585974\nPoints: 113\n# Comments: 34",
+      "publishedDate": "2026-03-31T07:49:03-04:00",
+      "id": "https://tinyapl.rubenverg.com/docs/info/combinators",
+      "timestamp": "2026-03-31T07:49:03-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "combinators",
+        "url",
+        "https",
+        "com",
+        "comments",
+        "article",
+        "tinyapl",
+        "rubenverg",
+        "docs",
+        "info"
+      ]
+    }
+  },
+  {
+    "record": {
+      "title": "Claude Code\u0027s source code has been leaked via a map file in their NPM registry",
+      "link": "https://twitter.com/Fried_rice/status/2038894956459290963",
+      "description": "https://xcancel.com/Fried_rice/status/2038894956459290963\n\nComments URL: https://news.ycombinator.com/item?id=47584540\nPoints: 1666\n# Comments: 830",
+      "publishedDate": "2026-03-31T05:00:40-04:00",
+      "id": "https://twitter.com/Fried_rice/status/2038894956459290963",
+      "timestamp": "2026-03-31T05:00:40-04:00",
+      "sourceType": "rss"
+    },
+    "enrichment": {
+      "keywords": [
+        "code",
+        "https",
+        "com",
+        "comments",
+        "claude",
+        "source",
+        "leaked",
+        "via",
+        "map",
+        "file"
+      ]
+    }
+  }
+]

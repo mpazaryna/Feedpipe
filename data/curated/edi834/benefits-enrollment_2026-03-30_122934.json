@@ -1,0 +1,40 @@
+[
+  {
+    "record": {
+      "subscriberId": "SUB001",
+      "memberName": "Smith, Alice",
+      "relationshipCode": "18",
+      "maintenanceTypeCode": "021",
+      "coverageStartDate": "2026-01-01T00:00:00",
+      "coverageEndDate": null,
+      "planId": "PLAN-A",
+      "dedupKey": "SUB001|2026-01-01|PLAN-A",
+      "id": "SUB001",
+      "timestamp": "2026-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "enrichment": {
+      "enrollmentStatus": "active",
+      "relationship": "self"
+    }
+  },
+  {
+    "record": {
+      "subscriberId": "SUB002",
+      "memberName": "Jones, Bob",
+      "relationshipCode": "01",
+      "maintenanceTypeCode": "024",
+      "coverageStartDate": "2026-01-01T00:00:00",
+      "coverageEndDate": "2026-12-31T00:00:00",
+      "planId": "PLAN-B",
+      "dedupKey": "SUB002|2026-01-01|PLAN-B",
+      "id": "SUB002",
+      "timestamp": "2026-01-01T00:00:00",
+      "sourceType": "edi834"
+    },
+    "enrichment": {
+      "enrollmentStatus": "terminated",
+      "relationship": "spouse"
+    }
+  }
+]
