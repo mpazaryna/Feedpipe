@@ -22,7 +22,7 @@ sequenceDiagram
 
         P->>A: IngestAsync(source.Location)
         Note over A: RSS: HTTP GET → parse XML<br/>EDI834: read file → parse X12<br/>Zotero: read CSV → enrich arXiv
-        A-->>P: List&lt;IPipelineRecord&gt;
+        A-->>P: List of IPipelineRecord
 
         P->>RW: WriteAsync(items, sourceType, sourceName)
         Note over RW: data/raw/{sourceType}/{name}_{ts}.json
@@ -42,7 +42,7 @@ sequenceDiagram
 
         P->>DT: ExecuteAsync(records)
         DT->>TW: ReadPreviousIdsAsync(sourceType)
-        TW-->>DT: HashSet&lt;string&gt; of known IDs
+        TW-->>DT: HashSet of known IDs
         loop For each record
             DT->>DT: resolve dedup key (ICompositeDedupKey or Id)
             alt key already seen
@@ -53,7 +53,7 @@ sequenceDiagram
 
         P->>ET: ExecuteAsync(records)
         Note over ET: RSS: extract keywords<br/>EDI834: derive status + relationship<br/>Zotero: extract domain tags
-        ET-->>P: List&lt;TransformedRecord&gt;
+        ET-->>P: List of TransformedRecord
 
         alt transformed.Count > 0
             P->>TW: WriteAsync(transformed, sourceType, sourceName)
