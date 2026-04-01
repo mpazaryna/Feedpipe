@@ -11,8 +11,6 @@ logs/
 TestResults/
 coverage-report/
 
-# Claude Code local config
-.claude/
 
 # DocFX generated site
 docs/_site/
