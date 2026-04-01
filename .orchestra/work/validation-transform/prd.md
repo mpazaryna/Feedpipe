@@ -35,7 +35,7 @@ Serves the **Data Transformation** milestone.
 ## References
 
 - Milestone PRD: [data-transformation/prd.md](../data-transformation/prd.md)
-- Depends on: [86e0mhara-rejected-data-tier](../86e0mhara-rejected-data-tier/prd.md) (complete)
+- Depends on: [rejected-data-tier](../rejected-data-tier/prd.md) (complete)
 - Ticket: https://app.clickup.com/t/86e0mhar6
 
 ## Notes

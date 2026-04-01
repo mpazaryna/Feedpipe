@@ -81,8 +81,8 @@ A dedicated **Storage Backends** milestone could be considered in the future to 
 | Storage abstraction | A common interface for persisting processed records | Not Started |
 | Second storage backend | At least one alternative to filesystem JSON (e.g., SQLite) | Not Started |
 | Tests | Coverage for each transformation stage and storage backend | Not Started |
-| Rejected data tier | `data/rejected/` output for invalid records with error details | Complete — [86e0mhara-rejected-data-tier](../86e0mhara-rejected-data-tier/prd.md) |
-| ValidationTransform | Filter invalid records before curation, route to rejected tier | Not Started — [86e0mhar6-validation-transform](../86e0mhar6-validation-transform/prd.md) |
+| Rejected data tier | `data/rejected/` output for invalid records with error details | Complete — [rejected-data-tier](../rejected-data-tier/prd.md) |
+| ValidationTransform | Filter invalid records before curation, route to rejected tier | Complete — [validation-transform](../validation-transform/prd.md) |
 
 ## Notes
 
