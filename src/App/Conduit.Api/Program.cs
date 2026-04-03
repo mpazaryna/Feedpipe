@@ -44,6 +44,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+// GET /health -- Health probe for Azure App Service / Container Apps.
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))
+    .WithName("Health");
+
 // GET /sources -- Returns the list of configured sources from appsettings.json.
 app.MapGet("/sources", (Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
     settings.Value.Sources)
@@ -136,3 +140,5 @@ app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
 .WithName("IngestAndSaveSource");
 
 app.Run();
+
+public partial class Program { }
